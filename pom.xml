@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.nitinsurana</groupId>
-    <artifactId>LitecoinRPCConnector</artifactId>
+    <artifactId>Litecoin-Bitcoin-RPC-Java-Connector</artifactId>
     <version>2.0</version>
     <packaging>jar</packaging>
 
-    <name>LitecoinRPCConnector</name>
+    <name>Litecoin-Bitcoin-RPC-Java-Connector</name>
     <description>Java Wrapper around the JSON-RPC provided by Bitcoin/Litecoin</description>
     <url>http://nitinsurana.com</url>
 
