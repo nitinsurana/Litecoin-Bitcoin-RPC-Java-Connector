@@ -6,12 +6,8 @@ This project is a java library that is intended to provide a wrapper around JSON
 It has been tested on Litecoin. I wrote it for one of my projects.
 
 The main dependencies of this project are 
-
-    *   **Htmlunit**
-	
+    *   **Htmlunit**	
     *   **Google Gson**
-	
-rest are specified clearly in *POM.xml*
 
 Since this was intended for use in a proprietory project, I've tried to write as much javadoc as possible as to what the method does.
 
