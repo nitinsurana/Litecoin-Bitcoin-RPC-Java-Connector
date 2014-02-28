@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.nitinsurana.litecoinrpcconnector.beans;
+package com.nitinsurana.bitcoinlitecoin.rpcconnector.beans;
 
 import java.util.logging.Logger;
 

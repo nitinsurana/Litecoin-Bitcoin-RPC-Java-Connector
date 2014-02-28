@@ -1,4 +1,4 @@
-package com.nitinsurana.litecoinrpcconnector;
+package com.nitinsurana.bitcoinlitecoin.rpcconnector;
 
 //import com.nitinsurana.litecoinrpcconnector.responses.JSONResponse;
 //import com.nitinsurana.litecoinrpcconnector.responses.ArrayResponse;
