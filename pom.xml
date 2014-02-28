@@ -25,9 +25,11 @@
     </licenses>
 
     <scm>
+        <!--scm:git:git@github.com:{organization}/{project}.git-->
         <url>https://github.com/coding-idiot/Litecoin-Bitcoin-RPC-Java-Connector</url>
-        <connection>scm:git:git://github.com/coding-idiot/Litecoin-Bitcoin-RPC-Java-Connector.git</connection>
+        <!--<connection>scm:git:git@github.com/coding-idiot/Litecoin-Bitcoin-RPC-Java-Connector.git</connection>-->
         <developerConnection>scm:git:git@github.com:coding-idiot/Litecoin-Bitcoin-RPC-Java-Connector.git</developerConnection>
+        <connection>scm:git:git@github.com:coding-idiot/Litecoin-Bitcoin-RPC-Java-Connector.git</connection>
     </scm>
     
     <developers>
