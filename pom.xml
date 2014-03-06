@@ -10,6 +10,7 @@
     <description>Java Wrapper around the JSON-RPC provided by Bitcoin/Litecoin</description>
     <url>http://nitinsurana.com</url>
 
+	
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
