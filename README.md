@@ -10,7 +10,7 @@ The main dependencies of this project are
     *   **Htmlunit**	
     *   **Google Gson**
 
-Since this was intended for use in a proprietory project, I've tried to write as much javadoc as possible as to what the method does.
+Since this was intended for use in a proprietary project, I've tried to write as much javadoc as possible as to what the method does.
 
 JSON-RPC calls for Litecoin & Bitcoin are same as you can see below, so this work shall work with both. If it doesn't please let me know by filing an issue.
 
