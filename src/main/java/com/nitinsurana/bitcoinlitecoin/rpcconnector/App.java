@@ -20,10 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
 
-/**
- * Hello world!
- *
- */
 public class App {
 
     public static final Logger LOG = Logger.getLogger(App.class);
@@ -517,9 +513,8 @@ public class App {
 
     /**
      * Returns all unspent outputs with at least [minconf] and at most 9999999
-     * confirmations; Further limited to outputs that pay at least one of the
-     * given addresses in the [address] array.
-     *
+     * confirmations.
+     * 
      * @param minconf
      * @return
      * @throws Exception
@@ -591,8 +586,7 @@ public class App {
             String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
             throw new RpcInvalidResponseException(message);
         }
-        JsonObject asJsonObject = jsonObj.get("result").getAsJsonObject();
-        return asJsonObject;
+        return jsonObj.get("result").getAsJsonObject();
     }
 
     /**
