@@ -39,6 +39,7 @@ public enum APICalls {
     DECODE_RAW_TRANSACTION("decoderawtransaction"),
     GET_RAW_TRANSACTION("getrawtransaction"),
     LIST_TRANSACTIONS("listtransactions"),
+    VALIDATE_ADDRESS("validateaddress"),
     ENCRYPT_WALLET("encryptwallet");
 
     private String value;

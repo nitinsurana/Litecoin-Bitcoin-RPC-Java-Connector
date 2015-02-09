@@ -404,6 +404,17 @@ public class App {
         return jsonObj.get("result").getAsString();
     }
 
+    public boolean validateAddress(String address) throws Exception {
+        JsonObject jsonObj = callAPIMethod(APICalls.VALIDATE_ADDRESS, address);
+
+        if(jsonObj.get("error")!=null&&jsonObj.get("error").isJsonObject()){
+            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
+            throw new RpcInvalidResponseException(message);
+        }
+
+        return jsonObj.get("result").getAsJsonObject().get("isvalid").getAsBoolean();
+    }
+
     /**
      * Sets the account associated with the given address. Assigning address
      * that is already assigned to the same account will create a new address
