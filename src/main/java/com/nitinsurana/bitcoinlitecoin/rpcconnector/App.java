@@ -217,7 +217,7 @@ public class App {
     }
 
     /**
-     * Returns the server's total available balance.
+     * Returns the wallet's total available balance.
      *
      * @return
      * @throws Exception
@@ -240,7 +240,7 @@ public class App {
      */
 //    public double getReceivedByAccount() throws Exception {
 //        JsonObject jsonObj = callAPIMethod(APICalls.GET_RECEIVED_BY_ACCOUNT);
-//        
+//
 //        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
 //            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
 //            throw new RpcInvalidResponseException(message);
@@ -284,6 +284,7 @@ public class App {
     /**
      * Returns a new address for receiving payments.
      *
+     * @param account
      * @return
      * @throws Exception
      */
@@ -404,6 +405,25 @@ public class App {
         return jsonObj.get("result").getAsString();
     }
 
+    /**
+     * < amount > is a real and is rounded to the nearest 0.00000001
+     *
+     * @param toAddress
+     * @param amount
+     * @return TransactionID
+     * @throws Exception
+     */
+    public String sendToAddress(String toAddress, double amount) throws Exception{
+        JsonObject jsonObj = callAPIMethod(APICalls.SEND_TO_ADDRESS, toAddress, amount);
+
+        if(jsonObj.get("error")!=null&&jsonObj.get("error").isJsonObject()){
+            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
+            throw new RpcInvalidResponseException(message);
+        }
+
+        return jsonObj.get("result").getAsString();
+    }
+
     public boolean validateAddress(String address) throws Exception {
         JsonObject jsonObj = callAPIMethod(APICalls.VALIDATE_ADDRESS, address);
 
@@ -422,7 +442,7 @@ public class App {
      *
      * @param address
      * @param account
-     * @return
+     *
      * @throws Exception
      */
     public void setAccount(String address, String account) throws Exception {
@@ -453,6 +473,144 @@ public class App {
             throw new RpcInvalidResponseException(message);
         }
         return jsonObj.get("result").getAsJsonArray();
+    }
+
+    /**
+     * Returns all unspent outputs with at least [minconf] and at most [maxconf]
+     * confirmations.
+     *
+     * @param minconf
+     * @param maxconf
+     * @return
+     * @throws Exception
+     */
+    public JsonArray listUnspent(int minconf, int maxconf) throws Exception {
+        JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf, maxconf);
+
+        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
+            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
+            throw new RpcInvalidResponseException(message);
+        }
+        return jsonObj.get("result").getAsJsonArray();
+    }
+
+    /**
+     * Returns all unspent outputs with at least [minconf] and at most 9999999
+     * confirmations; Further limited to outputs that pay at least one of the
+     * given addresses in the [address] array.
+     *
+     * @param minconf
+     * @param address
+     * @return
+     * @throws Exception
+     */
+    public JsonArray listUnspent(int minconf, String[] address) throws Exception {
+        JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf, address);
+
+        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
+            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
+            throw new RpcInvalidResponseException(message);
+        }
+        return jsonObj.get("result").getAsJsonArray();
+    }
+
+
+    /**
+     * Returns all unspent outputs with at least [minconf] and at most 9999999
+     * confirmations; Further limited to outputs that pay at least one of the
+     * given addresses in the [address] array.
+     *
+     * @param minconf
+     * @return
+     * @throws Exception
+     */
+    public JsonArray listUnspent(int minconf) throws Exception {
+        JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf);
+
+        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
+            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
+            throw new RpcInvalidResponseException(message);
+        }
+        return jsonObj.get("result").getAsJsonArray();
+    }
+
+    /**
+     * Returns all unspent outputs with at least [minconf] and at most [maxconf]
+     * confirmations; Further limited to outputs that pay at least one of the
+     * given addresses in the [address] array.
+     *
+     * @param minconf
+     * @param maxconf
+     * @param address
+     * @return
+     * @throws Exception
+     */
+    public JsonArray listUnspent(int minconf, int maxconf, String[] address) throws Exception {
+        JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf, maxconf, address);
+
+        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
+            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
+            throw new RpcInvalidResponseException(message);
+        }
+        return jsonObj.get("result").getAsJsonArray();
+    }
+
+    /**
+     * Returns an unsigned transaction that spends the outputs [prevOut] to new
+     * outputs [Out] and encodes it as hex format.
+     *
+     * @param prevOut is an array of JsonObjects, each with the properties
+     * "txid" and "vout".
+     * @param out is an JsonObject with the receiving addresses as properties
+     * and the receiving amount as value of each property(=address)
+     * @return
+     * @throws Exception
+     */
+    public String createRawTransaction(JsonObject[] prevOut, JsonObject out) throws Exception {
+        JsonObject jsonObj = callAPIMethod(APICalls.CREATE_RAW_TRANSACTION, prevOut, out);
+
+        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
+            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
+            throw new RpcInvalidResponseException(message);
+        }
+        return jsonObj.get("result").getAsString();
+    }
+
+    /**
+     * Returns a signed transaction in hex format using private keys stored in
+     * the wallet and the output from createRawTransaction()
+     *
+     * @param hexString
+     * @return
+     * @throws Exception
+     */
+    public JsonObject signRawTransaction(String hexString) throws Exception {
+        JsonObject jsonObj = callAPIMethod(APICalls.SIGN_RAW_TRANSACTION,hexString);
+
+        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
+            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
+            throw new RpcInvalidResponseException(message);
+        }
+        JsonObject asJsonObject = jsonObj.get("result").getAsJsonObject();
+        return asJsonObject;
+    }
+
+    /**
+     * Validates a signed transaction in hex format and broadcasts it to the
+     * network.
+     *
+     * @param hexString
+     * @return
+     * @throws Exception
+     */
+    public String sendRawTransaction(String hexString) throws Exception {
+        JsonObject jsonObj = callAPIMethod(APICalls.SEND_RAW_TRANSACTION,hexString);
+
+        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
+            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
+            throw new RpcInvalidResponseException(message);
+        }
+        return jsonObj.get("result").getAsString();
     }
 
     public static void main(String[] args) throws Exception {
