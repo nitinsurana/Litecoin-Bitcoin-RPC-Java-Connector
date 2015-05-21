@@ -90,7 +90,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.nitinsurana.bitcoinlitecoin.rpcconnector.App</mainClass>
+                            <mainClass>com.nitinsurana.bitcoinlitecoin.rpcconnector.BitcoindRPC</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

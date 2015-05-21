@@ -2,27 +2,18 @@ package com.nitinsurana.bitcoinlitecoin.rpcconnector;
 
 //import com.nitinsurana.litecoinrpcconnector.responses.JSONResponse;
 //import com.nitinsurana.litecoinrpcconnector.responses.ArrayResponse;
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.HttpMethod;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.log4j.Logger;
 
-public class App {
+import java.net.URL;
 
-    public static final Logger LOG = Logger.getLogger(App.class);
+public class BitcoindRPC {
+
+    public static final Logger LOG = Logger.getLogger(BitcoindRPC.class);
 
 //    static final String rpcUser = "Nitin";
 //    static final String rpcPassword = "magicmaker07";
@@ -30,9 +21,9 @@ public class App {
 //    static final String rpcPort = "9332";
     WebClient client;
     String baseUrl;
-    private App myself;
+    private BitcoindRPC myself;
 
-    public App(String rpcUser, String rpcPassword, String rpcHost, String rpcPort) throws AuthenticationException {
+    public BitcoindRPC(String rpcUser, String rpcPassword, String rpcHost, String rpcPort) throws AuthenticationException {
         client = new WebClient(BrowserVersion.FIREFOX_17);
         client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         client.getOptions().setThrowExceptionOnScriptError(false);
@@ -612,11 +603,11 @@ public class App {
         final String rpcPassword = "magicmaker07";
         final String rpcHost = "localhost";
         final String rpcPort = "9332";
-        App app = new App(rpcUser, rpcPassword, rpcHost, rpcPort);
+        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
 
-        app.listTransactions("nn", 11, 0);
-        app.listTransactions("", 11, 0);
-        app.listTransactions("nnn", 11, 0);
+        bitcoindRPC.listTransactions("nn", 11, 0);
+        bitcoindRPC.listTransactions("", 11, 0);
+        bitcoindRPC.listTransactions("nnn", 11, 0);
     }
 
     private JsonObject callAPIMethod(APICalls callMethod, Object... params) throws Exception {
@@ -646,7 +637,7 @@ public class App {
         final String rpcPassword = "magicmaker07";
         final String rpcHost = "localhost";
         final String rpcPort = "9332";
-        App app = new App(rpcUser, rpcPassword, rpcHost, rpcPort);
+        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
 
 //        String responseString = app.callAPIMethod(APICalls.GET_ADDRESSES_BY_ACCOUNT, "Nitin-Account");
 //        ArrayResponse response = new Gson().fromJson(responseString, ArrayResponse.class);
@@ -661,7 +652,7 @@ public class App {
         final String rpcPassword = "magicmaker07";
         final String rpcHost = "localhost";
         final String rpcPort = "9332";
-        App app = new App(rpcUser, rpcPassword, rpcHost, rpcPort);
+        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
 
         String txnId = "fa833b496a2a9467b3ca148c1bf223e6bc02d389e151555e9600e4aee360727f";
 //        String responseString = app.callAPIMethod(APICalls.GET_TRANSACTION, txnId);
@@ -673,7 +664,7 @@ public class App {
         final String rpcPassword = "magicmaker07";
         final String rpcHost = "localhost";
         final String rpcPort = "9332";
-        App app = new App(rpcUser, rpcPassword, rpcHost, rpcPort);
+        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
 
         String account = "Nitin-Account";
         String toAddress = "LMNtL3ta9Ff69tecAuZ1LrW63R7fJ2TBD1";
@@ -700,7 +691,7 @@ public class App {
         final String rpcPassword = "magicmaker07";
         final String rpcHost = "localhost";
         final String rpcPort = "9332";
-        App app = new App(rpcUser, rpcPassword, rpcHost, rpcPort);
+        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
 
         String address = "LLPHV1q1frWjD63jrs7fVp8Wrjz2qcft9b";
 //        String responseString = app.callAPIMethod(APICalls.SET_ACCOUNT, address, "nitin.cool4urchat@gmail.com");
@@ -718,7 +709,7 @@ public class App {
         final String rpcPassword = "magicmaker07";
         final String rpcHost = "localhost";
         final String rpcPort = "9332";
-        App app = new App(rpcUser, rpcPassword, rpcHost, rpcPort);
+        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
 
 //        String responseString = app.callAPIMethod(APICalls.GET_NEW_ADDRESS);        //Can take an account
 //        JSONResponse response = new Gson().fromJson(responseString, JSONResponse.class);
