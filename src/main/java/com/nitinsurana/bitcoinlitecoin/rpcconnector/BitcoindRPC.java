@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.net.URL;
 
 public class BitcoindRPC {
@@ -193,14 +194,14 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-    public double getBalance(String account) throws Exception {
+    public BigDecimal getBalance(String account) throws Exception {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_BALANCE, account);
 
         if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
             String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
             throw new RpcInvalidResponseException(message);
         }
-        return jsonObj.get("result").getAsDouble();
+        return jsonObj.get("result").getAsBigDecimal();
     }
 
     /**
@@ -209,14 +210,14 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-    public double getBalance() throws Exception {
+    public BigDecimal getBalance() throws Exception {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_BALANCE);
 
         if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
             String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
             throw new RpcInvalidResponseException(message);
         }
-        return jsonObj.get("result").getAsDouble();
+        return jsonObj.get("result").getAsBigDecimal();
     }
 
     /**
@@ -225,14 +226,14 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-//    public double getReceivedByAccount() throws Exception {
+//    public BigDecimal getReceivedByAccount() throws Exception {
 //        JsonObject jsonObj = callAPIMethod(APICalls.GET_RECEIVED_BY_ACCOUNT);
 //
 //        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
 //            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
 //            throw new RpcInvalidResponseException(message);
 //        }
-//        return jsonObj.get("result").getAsDouble();
+//        return jsonObj.get("result").getAsBigDecimal();
 //    }
     /**
      * Returns the total amount received by addresses with [account] in
@@ -242,14 +243,14 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-    public double getReceivedByAccount(String account) throws Exception {
+    public BigDecimal getReceivedByAccount(String account) throws Exception {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_RECEIVED_BY_ACCOUNT, account);
 
         if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
             String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
             throw new RpcInvalidResponseException(message);
         }
-        return jsonObj.get("result").getAsDouble();
+        return jsonObj.get("result").getAsBigDecimal();
     }
 
     /**
@@ -292,14 +293,14 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-    public double getReceivedByAddress(String address) throws Exception {
+    public BigDecimal getReceivedByAddress(String address) throws Exception {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_RECEIVED_BY_ADDRESS, address);
 
         if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
             String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
             throw new RpcInvalidResponseException(message);
         }
-        return jsonObj.get("result").getAsDouble();
+        return jsonObj.get("result").getAsBigDecimal();
     }
 
     /**
@@ -382,7 +383,7 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-    public String sendFrom(String fromAccount, String toAddress, double amount) throws Exception {
+    public String sendFrom(String fromAccount, String toAddress, BigDecimal amount) throws Exception {
         JsonObject jsonObj = callAPIMethod(APICalls.SEND_FROM, fromAccount, toAddress, amount);
 
         if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
@@ -400,7 +401,7 @@ public class BitcoindRPC {
      * @return TransactionID
      * @throws Exception
      */
-    public String sendToAddress(String toAddress, double amount) throws Exception{
+    public String sendToAddress(String toAddress, BigDecimal amount) throws Exception{
         JsonObject jsonObj = callAPIMethod(APICalls.SEND_TO_ADDRESS, toAddress, amount);
 
         if(jsonObj.get("error")!=null&&jsonObj.get("error").isJsonObject()){
@@ -668,7 +669,7 @@ public class BitcoindRPC {
 
         String account = "Nitin-Account";
         String toAddress = "LMNtL3ta9Ff69tecAuZ1LrW63R7fJ2TBD1";
-        Double amount = 0.00005;
+        BigDecimal amount = new BigDecimal(0.00005);
 //        String responseString = app.callAPIMethod(APICalls.SEND_FROM, account, toAddress, amount);
 //        LOG.info("Send From : " + responseString);
 
