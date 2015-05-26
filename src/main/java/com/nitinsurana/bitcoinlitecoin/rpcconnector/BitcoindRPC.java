@@ -55,10 +55,6 @@ public class BitcoindRPC {
      */
     public boolean backupWallet(String destination) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.BACKUP_WALLET, destination);
-
-//        ArrayResponse response = new Gson().fromJson(responseString, ArrayResponse.class);
-//        LOG.info("Backup Wallet : " + ToStringBuilder.reflectionToString(response, ToStringStyle.DEFAULT_STYLE));
-//        if (response.getError() == null) {
         if (jsonObj.get("error") == null) {
             return true;
         }
@@ -74,9 +70,6 @@ public class BitcoindRPC {
      */
     public JsonObject decodeRawTransaction(String hex) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.DECODE_RAW_TRANSACTION, hex);
-
-//        ArrayResponse response = new Gson().fromJson(responseString, ArrayResponse.class);
-//        LOG.info("Decode Raw Transaction : " + ToStringBuilder.reflectionToString(response, ToStringStyle.DEFAULT_STYLE));
         bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonObject();
     }
@@ -107,22 +100,6 @@ public class BitcoindRPC {
         return jsonObj.get("result").getAsString();
     }
 
-    /**
-     * Encrypts the wallet with <passphrase>.
-     *
-     * @param passphrase
-     * @return
-     * @throws BitcoindException
-     */
-//    public String encryptWallet(String passphrase) throws BitcoindException {
-//        JsonObject jsonObj = callAPIMethod(APICalls.ENCRYPT_WALLET, passphrase);
-//
-//        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-//            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-//            throw new RpcInvalidResponseException(message);
-//        }
-//        return jsonObj.get("result").getAsString();
-//    }
     /**
      * Returns the account associated with the given address.
      *
@@ -188,17 +165,6 @@ public class BitcoindRPC {
         return jsonObj.get("result").getAsBigDecimal();
     }
 
-    /**
-     * return will include all transactions to all accounts
-     *
-     * @return
-     * @throws BitcoindException
-     */
-//    public BigDecimal getReceivedByAccount() throws BitcoindException {
-//        JsonObject jsonObj = callAPIMethod(APICalls.GET_RECEIVED_BY_ACCOUNT);
-//        bitcoindExceptionHandler.checkException(jsonObj);
-//        return jsonObj.get("result").getAsBigDecimal();
-//    }
     /**
      * Returns the total amount received by addresses with [account] in
      * transactions
@@ -354,8 +320,6 @@ public class BitcoindRPC {
     public void setAccount(String address, String account) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.SET_ACCOUNT, address, account);
         bitcoindExceptionHandler.checkException(jsonObj);
-
-//        return jsonObj.get("result").getAsString();
     }
 
     /**
@@ -504,12 +468,10 @@ public class BitcoindRPC {
     private JsonObject callAPIMethod(APICalls callMethod, Object... params) throws CallApiBitcoindException {
         try {
             JsonObject jsonObj = null;
-//        JSONResponse jsonResponse = null;
             WebRequest req = new WebRequest(new URL(baseUrl));
             req.setAdditionalHeader("Content-type", "application/json");
             req.setHttpMethod(HttpMethod.POST);
             JSONRequestBody body = new JSONRequestBody();
-//        body.setMethod("getnewaddress");
             body.setMethod(callMethod.toString());
             if (params != null && params.length > 0) {
                 body.setParams(params);
@@ -517,101 +479,10 @@ public class BitcoindRPC {
             req.setRequestBody(new Gson().toJson(body, JSONRequestBody.class));
             WebResponse resp = client.getPage(req).getWebResponse();
             jsonObj = new JsonParser().parse(resp.getContentAsString()).getAsJsonObject();
-//            jsonResponse = new Gson().fromJson(responseString, JSONResponse.class);
             LOG.info("RPC Response : " + jsonObj);
-//        return jsonResponse.getResult();
-//        return jsonResponse;
             return jsonObj;
         } catch (Exception e) {
             throw new CallApiBitcoindException(e.getMessage());
         }
-    }
-
-    public static void mainx(String[] args) throws Exception {
-        final String rpcUser = "Nitin";
-        final String rpcPassword = "magicmaker07";
-        final String rpcHost = "localhost";
-        final String rpcPort = "9332";
-        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
-
-//        String responseString = app.callAPIMethod(APICalls.GET_ADDRESSES_BY_ACCOUNT, "Nitin-Account");
-//        ArrayResponse response = new Gson().fromJson(responseString, ArrayResponse.class);
-//        Type listType = new TypeToken<List<String>>() {
-//        }.getType();
-//        List<String> addresses = (List<String>) new Gson().fromJson(responseString, listType);
-//        LOG.info("Addresses By Account : " + response.getResult());
-    }
-
-    public static void mainq(String[] args) throws Exception {
-        final String rpcUser = "Nitin";
-        final String rpcPassword = "magicmaker07";
-        final String rpcHost = "localhost";
-        final String rpcPort = "9332";
-        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
-
-        String txnId = "fa833b496a2a9467b3ca148c1bf223e6bc02d389e151555e9600e4aee360727f";
-//        String responseString = app.callAPIMethod(APICalls.GET_TRANSACTION, txnId);
-//        LOG.info("Get Transaction : " + responseString);
-    }
-
-    public static void mainw(String[] args) throws Exception {
-        final String rpcUser = "Nitin";
-        final String rpcPassword = "magicmaker07";
-        final String rpcHost = "localhost";
-        final String rpcPort = "9332";
-        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
-
-        String account = "Nitin-Account";
-        String toAddress = "LMNtL3ta9Ff69tecAuZ1LrW63R7fJ2TBD1";
-        BigDecimal amount = new BigDecimal(0.00005);
-//        String responseString = app.callAPIMethod(APICalls.SEND_FROM, account, toAddress, amount);
-//        LOG.info("Send From : " + responseString);
-
-        Thread.sleep(5000);     //Sleeping for 5 seconds, to verify the balance transfer
-
-//        responseString = app.callAPIMethod(APICalls.GET_BALANCE, account, 1);       //Confirmed Transfer
-//        LOG.info("Get Balance  1 : " + responseString);
-//        responseString = app.callAPIMethod(APICalls.GET_BALANCE, account, 0);
-//        LOG.info("Get Balance : " + responseString);
-//
-//        responseString = app.callAPIMethod(APICalls.GET_BALANCE, "nitin.cool4urchat@gmail.com", 1);
-//        LOG.info("Get Balance 1 : " + responseString);
-//
-//        responseString = app.callAPIMethod(APICalls.GET_BALANCE, "nitin.cool4urchat@gmail.com", 0);     //Unconfirmed Transfer
-//        LOG.info("Get Balance : " + responseString);
-    }
-
-    public static void mainy(String[] args) throws Exception {
-        final String rpcUser = "Nitin";
-        final String rpcPassword = "magicmaker07";
-        final String rpcHost = "localhost";
-        final String rpcPort = "9332";
-        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
-
-        String address = "LLPHV1q1frWjD63jrs7fVp8Wrjz2qcft9b";
-//        String responseString = app.callAPIMethod(APICalls.SET_ACCOUNT, address, "nitin.cool4urchat@gmail.com");
-//        JSONResponse response = new Gson().fromJson(responseString, JSONResponse.class);
-//        LOG.info("Set Account : " + response.getResult());
-
-        address = "LMNtL3ta9Ff69tecAuZ1LrW63R7fJ2TBD1";
-//        responseString = app.callAPIMethod(APICalls.SET_ACCOUNT, address, "nitin.cool4urchat@gmail.com");
-//        response = new Gson().fromJson(responseString, JSONResponse.class);
-//        LOG.info("Set Account : " + response.getResult());
-    }
-
-    public static void mainz(String[] args) throws Exception {
-        final String rpcUser = "Nitin";
-        final String rpcPassword = "magicmaker07";
-        final String rpcHost = "localhost";
-        final String rpcPort = "9332";
-        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
-
-//        String responseString = app.callAPIMethod(APICalls.GET_NEW_ADDRESS);        //Can take an account
-//        JSONResponse response = new Gson().fromJson(responseString, JSONResponse.class);
-//        LOG.info("New Address : " + response.getResult());
-//
-//        responseString = app.callAPIMethod(APICalls.DUMP_PRIVATE_KEY, response.getResult());
-//        response = new Gson().fromJson(responseString, JSONResponse.class);
-//        LOG.info("Dump Private Key : " + response.getResult());
     }
 }

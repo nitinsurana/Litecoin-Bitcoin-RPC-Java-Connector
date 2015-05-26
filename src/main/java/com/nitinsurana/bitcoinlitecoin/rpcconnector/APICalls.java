@@ -5,18 +5,12 @@
  */
 package com.nitinsurana.bitcoinlitecoin.rpcconnector;
 
-import java.util.logging.Logger;
-
 /**
  *
  * @author hp
  */
 public enum APICalls {
 
-//    public static final Logger LOG = Logger.getLogger(APICalls.class.getName());
-//
-//    public static final String GET_NEW_ADDRESS = "";
-//    public static final String DUMP_PRIVATE_KEY = "";
     GET_NEW_ADDRESS("getnewaddress"),
     DUMP_PRIVATE_KEY("dumpprivkey"),
     GET_ACCOUNT("getaccount"),
@@ -53,7 +47,7 @@ public enum APICalls {
 
     @Override
     public String toString() {
-//        return super.toString(); //To change body of generated methods, choose Tools | Templates.
+        //Using in BitcoinRPC#callAPIMethod(..)
         return value;
     }
 
