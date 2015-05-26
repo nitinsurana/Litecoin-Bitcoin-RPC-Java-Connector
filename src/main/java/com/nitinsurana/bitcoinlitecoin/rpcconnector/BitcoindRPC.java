@@ -5,7 +5,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.BitcoindException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.BitcoindExceptionHandler;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CallApiBitcoindException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
 import org.apache.log4j.Logger;
 
@@ -51,7 +53,7 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-    public boolean backupWallet(String destination) throws Exception {
+    public boolean backupWallet(String destination) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.BACKUP_WALLET, destination);
 
 //        ArrayResponse response = new Gson().fromJson(responseString, ArrayResponse.class);
@@ -68,18 +70,14 @@ public class BitcoindRPC {
      *
      * @param hex
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public JsonObject decodeRawTransaction(String hex) throws Exception {
+    public JsonObject decodeRawTransaction(String hex) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.DECODE_RAW_TRANSACTION, hex);
 
 //        ArrayResponse response = new Gson().fromJson(responseString, ArrayResponse.class);
 //        LOG.info("Decode Raw Transaction : " + ToStringBuilder.reflectionToString(response, ToStringStyle.DEFAULT_STYLE));
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
-
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonObject();
     }
 
@@ -88,15 +86,11 @@ public class BitcoindRPC {
      *
      * @param address
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public String dumpPrivateKey(String address) throws Exception {
+    public String dumpPrivateKey(String address) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.DUMP_PRIVATE_KEY, address);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -105,15 +99,11 @@ public class BitcoindRPC {
      *
      * @param txid
      * @return returns the hex string for the given transaction id
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public String getRawTransaction(String txid) throws Exception {
+    public String getRawTransaction(String txid) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_RAW_TRANSACTION, txid);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -122,9 +112,9 @@ public class BitcoindRPC {
      *
      * @param passphrase
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-//    public String encryptWallet(String passphrase) throws Exception {
+//    public String encryptWallet(String passphrase) throws BitcoindException {
 //        JsonObject jsonObj = callAPIMethod(APICalls.ENCRYPT_WALLET, passphrase);
 //
 //        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
@@ -138,15 +128,11 @@ public class BitcoindRPC {
      *
      * @param address
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public String getAccount(String address) throws Exception {
+    public String getAccount(String address) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_ACCOUNT, address);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -156,15 +142,11 @@ public class BitcoindRPC {
      *
      * @param account
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public String getAccountAddress(String account) throws Exception {
+    public String getAccountAddress(String account) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_ACCOUNT_ADDRESS, account);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -173,15 +155,11 @@ public class BitcoindRPC {
      *
      * @param account
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public JsonArray getAddressesByAccount(String account) throws Exception {
+    public JsonArray getAddressesByAccount(String account) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_ADDRESSES_BY_ACCOUNT, account);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -190,15 +168,11 @@ public class BitcoindRPC {
      *
      * @param account
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public BigDecimal getBalance(String account) throws Exception {
+    public BigDecimal getBalance(String account) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_BALANCE, account);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsBigDecimal();
     }
 
@@ -206,15 +180,11 @@ public class BitcoindRPC {
      * Returns the wallet's total available balance.
      *
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public BigDecimal getBalance() throws Exception {
+    public BigDecimal getBalance() throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_BALANCE);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsBigDecimal();
     }
 
@@ -222,15 +192,11 @@ public class BitcoindRPC {
      * return will include all transactions to all accounts
      *
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-//    public BigDecimal getReceivedByAccount() throws Exception {
+//    public BigDecimal getReceivedByAccount() throws BitcoindException {
 //        JsonObject jsonObj = callAPIMethod(APICalls.GET_RECEIVED_BY_ACCOUNT);
-//
-//        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-//            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-//            throw new RpcInvalidResponseException(message);
-//        }
+//        bitcoindExceptionHandler.checkException(jsonObj);
 //        return jsonObj.get("result").getAsBigDecimal();
 //    }
     /**
@@ -239,15 +205,11 @@ public class BitcoindRPC {
      *
      * @param account
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public BigDecimal getReceivedByAccount(String account) throws Exception {
+    public BigDecimal getReceivedByAccount(String account) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_RECEIVED_BY_ACCOUNT, account);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsBigDecimal();
     }
 
@@ -255,15 +217,11 @@ public class BitcoindRPC {
      * Returns a new address for receiving payments.
      *
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public String getNewAddress() throws Exception {
+    public String getNewAddress() throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_NEW_ADDRESS);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -272,15 +230,11 @@ public class BitcoindRPC {
      *
      * @param account
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public String getNewAddress(String account) throws Exception {
+    public String getNewAddress(String account) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_NEW_ADDRESS, account);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -289,15 +243,11 @@ public class BitcoindRPC {
      *
      * @param address
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public BigDecimal getReceivedByAddress(String address) throws Exception {
+    public BigDecimal getReceivedByAddress(String address) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_RECEIVED_BY_ADDRESS, address);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsBigDecimal();
     }
 
@@ -308,15 +258,11 @@ public class BitcoindRPC {
      *
      * @param txid
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public Transaction getTransaction(String txid) throws Exception {
+    public Transaction getTransaction(String txid) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_TRANSACTION, txid);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
     }
 
@@ -325,15 +271,11 @@ public class BitcoindRPC {
      * values.
      *
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public JsonObject listAccounts() throws Exception {
+    public JsonObject listAccounts() throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_ACCOUNTS);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonObject();
     }
 
@@ -342,13 +284,9 @@ public class BitcoindRPC {
      *
      * @return
      */
-    public JsonArray listReceivedByAccount() throws Exception {
+    public JsonArray listReceivedByAccount() throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_RECEIVED_BY_ACCOUNT);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -357,15 +295,11 @@ public class BitcoindRPC {
      * confirmations
      *
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public JsonArray listReceivedByAddress() throws Exception {
+    public JsonArray listReceivedByAddress() throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_RECEIVED_BY_ADDRESS);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -379,12 +313,11 @@ public class BitcoindRPC {
      * @param toAddress
      * @param amount
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public String sendFrom(String fromAccount, String toAddress, BigDecimal amount) throws Exception {
+    public String sendFrom(String fromAccount, String toAddress, BigDecimal amount) throws BitcoindException {
         JsonObject response = callAPIMethod(APICalls.SEND_FROM, fromAccount, toAddress, amount);
         bitcoindExceptionHandler.checkException(response);
-
         return response.get("result").getAsString();
     }
 
@@ -394,27 +327,17 @@ public class BitcoindRPC {
      * @param toAddress
      * @param amount
      * @return TransactionID
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public String sendToAddress(String toAddress, BigDecimal amount) throws Exception{
+    public String sendToAddress(String toAddress, BigDecimal amount) throws BitcoindException{
         JsonObject jsonObj = callAPIMethod(APICalls.SEND_TO_ADDRESS, toAddress, amount);
-
-        if(jsonObj.get("error")!=null&&jsonObj.get("error").isJsonObject()){
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
-
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
-    public boolean validateAddress(String address) throws Exception {
+    public boolean validateAddress(String address) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.VALIDATE_ADDRESS, address);
-
-        if(jsonObj.get("error")!=null&&jsonObj.get("error").isJsonObject()){
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
-
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonObject().get("isvalid").getAsBoolean();
     }
 
@@ -426,15 +349,12 @@ public class BitcoindRPC {
      * @param address
      * @param account
      *
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public void setAccount(String address, String account) throws Exception {
+    public void setAccount(String address, String account) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.SET_ACCOUNT, address, account);
+        bitcoindExceptionHandler.checkException(jsonObj);
 
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
 //        return jsonObj.get("result").getAsString();
     }
 
@@ -446,15 +366,12 @@ public class BitcoindRPC {
      * @param count
      * @param from
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public List<Transaction> listTransactions(String account, int count, int from) throws Exception {
+    public List<Transaction> listTransactions(String account, int count, int from) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_TRANSACTIONS, account, count, from);
+        bitcoindExceptionHandler.checkException(jsonObj);
 
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
         return Arrays.asList(gson.fromJson(jsonObj.get("result").getAsJsonArray(), Transaction[].class));
     }
 
@@ -465,15 +382,12 @@ public class BitcoindRPC {
      * @param minconf
      * @param maxconf
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public JsonArray listUnspent(int minconf, int maxconf) throws Exception {
+    public JsonArray listUnspent(int minconf, int maxconf) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf, maxconf);
+        bitcoindExceptionHandler.checkException(jsonObj);
 
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -485,15 +399,12 @@ public class BitcoindRPC {
      * @param minconf
      * @param address
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public JsonArray listUnspent(int minconf, String[] address) throws Exception {
+    public JsonArray listUnspent(int minconf, String[] address) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf, address);
 
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+                bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -504,15 +415,11 @@ public class BitcoindRPC {
      * 
      * @param minconf
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public JsonArray listUnspent(int minconf) throws Exception {
+    public JsonArray listUnspent(int minconf) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf);
-
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
+        bitcoindExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -525,15 +432,12 @@ public class BitcoindRPC {
      * @param maxconf
      * @param address
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public JsonArray listUnspent(int minconf, int maxconf, String[] address) throws Exception {
+    public JsonArray listUnspent(int minconf, int maxconf, String[] address) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf, maxconf, address);
+        bitcoindExceptionHandler.checkException(jsonObj);
 
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -546,15 +450,12 @@ public class BitcoindRPC {
      * @param out is an JsonObject with the receiving addresses as properties
      * and the receiving amount as value of each property(=address)
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public Transaction createRawTransaction(JsonObject[] prevOut, JsonObject out) throws Exception {
+    public Transaction createRawTransaction(JsonObject[] prevOut, JsonObject out) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.CREATE_RAW_TRANSACTION, prevOut, out);
+        bitcoindExceptionHandler.checkException(jsonObj);
 
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
         return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
     }
 
@@ -564,15 +465,12 @@ public class BitcoindRPC {
      *
      * @param hexString
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public Transaction signRawTransaction(String hexString) throws Exception {
+    public Transaction signRawTransaction(String hexString) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.SIGN_RAW_TRANSACTION,hexString);
+        bitcoindExceptionHandler.checkException(jsonObj);
 
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
         return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
     }
 
@@ -582,15 +480,12 @@ public class BitcoindRPC {
      *
      * @param hexString
      * @return
-     * @throws Exception
+     * @throws BitcoindException
      */
-    public String sendRawTransaction(String hexString) throws Exception {
+    public String sendRawTransaction(String hexString) throws BitcoindException {
         JsonObject jsonObj = callAPIMethod(APICalls.SEND_RAW_TRANSACTION,hexString);
+        bitcoindExceptionHandler.checkException(jsonObj);
 
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
         return jsonObj.get("result").getAsString();
     }
 
@@ -606,26 +501,30 @@ public class BitcoindRPC {
         bitcoindRPC.listTransactions("nnn", 11, 0);
     }
 
-    private JsonObject callAPIMethod(APICalls callMethod, Object... params) throws Exception {
-        JsonObject jsonObj = null;
+    private JsonObject callAPIMethod(APICalls callMethod, Object... params) throws CallApiBitcoindException {
+        try {
+            JsonObject jsonObj = null;
 //        JSONResponse jsonResponse = null;
-        WebRequest req = new WebRequest(new URL(baseUrl));
-        req.setAdditionalHeader("Content-type", "application/json");
-        req.setHttpMethod(HttpMethod.POST);
-        JSONRequestBody body = new JSONRequestBody();
+            WebRequest req = new WebRequest(new URL(baseUrl));
+            req.setAdditionalHeader("Content-type", "application/json");
+            req.setHttpMethod(HttpMethod.POST);
+            JSONRequestBody body = new JSONRequestBody();
 //        body.setMethod("getnewaddress");
-        body.setMethod(callMethod.toString());
-        if (params != null && params.length > 0) {
-            body.setParams(params);
-        }
-        req.setRequestBody(new Gson().toJson(body, JSONRequestBody.class));
-        WebResponse resp = client.getPage(req).getWebResponse();
-        jsonObj = new JsonParser().parse(resp.getContentAsString()).getAsJsonObject();
+            body.setMethod(callMethod.toString());
+            if (params != null && params.length > 0) {
+                body.setParams(params);
+            }
+            req.setRequestBody(new Gson().toJson(body, JSONRequestBody.class));
+            WebResponse resp = client.getPage(req).getWebResponse();
+            jsonObj = new JsonParser().parse(resp.getContentAsString()).getAsJsonObject();
 //            jsonResponse = new Gson().fromJson(responseString, JSONResponse.class);
-        LOG.info("RPC Response : " + jsonObj);
+            LOG.info("RPC Response : " + jsonObj);
 //        return jsonResponse.getResult();
 //        return jsonResponse;
-        return jsonObj;
+            return jsonObj;
+        } catch (Exception e) {
+            throw new CallApiBitcoindException(e.getMessage());
+        }
     }
 
     public static void mainx(String[] args) throws Exception {
