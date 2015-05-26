@@ -1,12 +1,11 @@
 package com.nitinsurana.bitcoinlitecoin.rpcconnector;
 
-//import com.nitinsurana.litecoinrpcconnector.responses.JSONResponse;
-//import com.nitinsurana.litecoinrpcconnector.responses.ArrayResponse;
 import com.gargoylesoftware.htmlunit.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.BitcoindExceptionHandler;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
@@ -16,13 +15,9 @@ public class BitcoindRPC {
 
     public static final Logger LOG = Logger.getLogger(BitcoindRPC.class);
 
-//    static final String rpcUser = "Nitin";
-//    static final String rpcPassword = "magicmaker07";
-//    static final String rpcHost = "localhost";
-//    static final String rpcPort = "9332";
-    WebClient client;
-    String baseUrl;
-    private BitcoindRPC myself;
+    private WebClient client;
+    private String baseUrl;
+    private BitcoindExceptionHandler bitcoindExceptionHandler = new BitcoindExceptionHandler();
 
     public BitcoindRPC(String rpcUser, String rpcPassword, String rpcHost, String rpcPort) throws AuthenticationException {
         client = new WebClient(BrowserVersion.FIREFOX_17);
@@ -384,13 +379,10 @@ public class BitcoindRPC {
      * @throws Exception
      */
     public String sendFrom(String fromAccount, String toAddress, BigDecimal amount) throws Exception {
-        JsonObject jsonObj = callAPIMethod(APICalls.SEND_FROM, fromAccount, toAddress, amount);
+        JsonObject response = callAPIMethod(APICalls.SEND_FROM, fromAccount, toAddress, amount);
+        bitcoindExceptionHandler.checkException(response);
 
-        if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
-            String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
-            throw new RpcInvalidResponseException(message);
-        }
-        return jsonObj.get("result").getAsString();
+        return response.get("result").getAsString();
     }
 
     /**
