@@ -6,10 +6,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.BitcoindExceptionHandler;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
 public class BitcoindRPC {
 
@@ -18,6 +21,7 @@ public class BitcoindRPC {
     private WebClient client;
     private String baseUrl;
     private BitcoindExceptionHandler bitcoindExceptionHandler = new BitcoindExceptionHandler();
+    private Gson gson = new Gson();
 
     public BitcoindRPC(String rpcUser, String rpcPassword, String rpcHost, String rpcPort) throws AuthenticationException {
         client = new WebClient(BrowserVersion.FIREFOX_17);
@@ -37,7 +41,6 @@ public class BitcoindRPC {
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
         }
-        myself = this;
     }
 
     /**
@@ -307,14 +310,14 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-    public JsonObject getTransaction(String txid) throws Exception {
+    public Transaction getTransaction(String txid) throws Exception {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_TRANSACTION, txid);
 
         if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
             String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
             throw new RpcInvalidResponseException(message);
         }
-        return jsonObj.get("result").getAsJsonObject();
+        return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
     }
 
     /**
@@ -445,14 +448,14 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-    public JsonArray listTransactions(String account, int count, int from) throws Exception {
+    public List<Transaction> listTransactions(String account, int count, int from) throws Exception {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_TRANSACTIONS, account, count, from);
 
         if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
             String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
             throw new RpcInvalidResponseException(message);
         }
-        return jsonObj.get("result").getAsJsonArray();
+        return Arrays.asList(gson.fromJson(jsonObj.get("result").getAsJsonArray(), Transaction[].class));
     }
 
     /**
@@ -545,14 +548,14 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-    public String createRawTransaction(JsonObject[] prevOut, JsonObject out) throws Exception {
+    public Transaction createRawTransaction(JsonObject[] prevOut, JsonObject out) throws Exception {
         JsonObject jsonObj = callAPIMethod(APICalls.CREATE_RAW_TRANSACTION, prevOut, out);
 
         if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
             String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
             throw new RpcInvalidResponseException(message);
         }
-        return jsonObj.get("result").getAsString();
+        return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
     }
 
     /**
@@ -563,14 +566,14 @@ public class BitcoindRPC {
      * @return
      * @throws Exception
      */
-    public JsonObject signRawTransaction(String hexString) throws Exception {
+    public Transaction signRawTransaction(String hexString) throws Exception {
         JsonObject jsonObj = callAPIMethod(APICalls.SIGN_RAW_TRANSACTION,hexString);
 
         if (jsonObj.get("error") != null && jsonObj.get("error").isJsonObject() == true) {
             String message = jsonObj.get("error").getAsJsonObject().get("message").getAsString();
             throw new RpcInvalidResponseException(message);
         }
-        return jsonObj.get("result").getAsJsonObject();
+        return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
     }
 
     /**
