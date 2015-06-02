@@ -26,7 +26,7 @@ public class BitcoindRPC {
     private Gson gson = new Gson();
 
     public BitcoindRPC(String rpcUser, String rpcPassword, String rpcHost, String rpcPort) throws AuthenticationException {
-        client = new WebClient(BrowserVersion.FIREFOX_17);
+        client = new WebClient(BrowserVersion.CHROME);
         client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         client.getOptions().setThrowExceptionOnScriptError(false);
         client.getOptions().setPrintContentOnFailingStatusCode(false);
@@ -34,7 +34,7 @@ public class BitcoindRPC {
         client.getOptions().setCssEnabled(false);
 
         baseUrl = new String("http://" + rpcUser + ":" + rpcPassword + "@" + rpcHost + ":" + rpcPort + "/");
-        LOG.info("Base RPC URL : " + baseUrl);
+        //LOG.info("Base RPC URL : " + baseUrl);
 
         try {
             if (client.getPage(baseUrl).getWebResponse().getStatusCode() == 401) {  //401 is Http Unauthorized
