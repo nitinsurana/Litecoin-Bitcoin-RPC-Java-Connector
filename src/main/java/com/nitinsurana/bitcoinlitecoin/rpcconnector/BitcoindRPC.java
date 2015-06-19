@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.AuthenticationException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.BitcoindException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.BitcoindExceptionHandler;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CallApiBitcoindException;
