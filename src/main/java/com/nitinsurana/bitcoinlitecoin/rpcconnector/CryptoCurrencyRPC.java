@@ -17,16 +17,16 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-public class BitcoindRPC {
+public class CryptoCurrencyRPC {
 
-    public static final Logger LOG = Logger.getLogger(BitcoindRPC.class);
+    public static final Logger LOG = Logger.getLogger(CryptoCurrencyRPC.class);
 
     private WebClient client;
     private String baseUrl;
     private BitcoindExceptionHandler bitcoindExceptionHandler = new BitcoindExceptionHandler();
     private Gson gson = new Gson();
 
-    public BitcoindRPC(String rpcUser, String rpcPassword, String rpcHost, String rpcPort) throws AuthenticationException {
+    public CryptoCurrencyRPC(String rpcUser, String rpcPassword, String rpcHost, String rpcPort) throws AuthenticationException {
         client = new WebClient(BrowserVersion.CHROME);
         client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         client.getOptions().setThrowExceptionOnScriptError(false);
@@ -459,11 +459,11 @@ public class BitcoindRPC {
         final String rpcPassword = "magicmaker07";
         final String rpcHost = "localhost";
         final String rpcPort = "9332";
-        BitcoindRPC bitcoindRPC = new BitcoindRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
+        CryptoCurrencyRPC cryptoCurrencyRPC = new CryptoCurrencyRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
 
-        bitcoindRPC.listTransactions("nn", 11, 0);
-        bitcoindRPC.listTransactions("", 11, 0);
-        bitcoindRPC.listTransactions("nnn", 11, 0);
+        cryptoCurrencyRPC.listTransactions("nn", 11, 0);
+        cryptoCurrencyRPC.listTransactions("", 11, 0);
+        cryptoCurrencyRPC.listTransactions("nnn", 11, 0);
     }
 
     private JsonObject callAPIMethod(APICalls callMethod, Object... params) throws CallApiBitcoindException {
