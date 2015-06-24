@@ -9,6 +9,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Observable;
 
+/**
+ * Basic class for implementation CryptoCurrencyListener's. Contains work with ports and streams.
+ */
 public class BitcoinDListener extends Observable implements Runnable {
 	public static final Logger LOG = Logger.getLogger(BitcoinDListener.class);
 	private final ServerSocket server;

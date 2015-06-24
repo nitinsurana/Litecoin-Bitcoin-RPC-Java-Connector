@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-
+/**
+ * The class, which allows to subscribe to notifications of events related to Bitcoin network.
+ * Bitcoind must be configured with -alertnotify parameter.
+ */
 public class AlertListener extends Observable implements Observer {
 
 	final private Observable alertListener;

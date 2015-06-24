@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-
+/**
+ * The class allows you to subscribe to the events associated with purses.
+ * Bitcoind must be configured with -walletnotify parameter.
+ */
 public class WalletListener extends Observable implements Observer {
 
 	final private Observable walletListener;
