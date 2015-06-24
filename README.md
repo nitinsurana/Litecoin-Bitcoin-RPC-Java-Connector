@@ -34,9 +34,9 @@ Sample Usage
         final String rpcPassword = "password";
         final String rpcHost = "localhost";
         final String rpcPort = "9332";
-        App app = new App(rpcUser, rpcPassword, rpcHost, rpcPort);
+        CryptoCurrencyRPC cryptoCurrencyRPC = new CryptoCurrencyRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
 
-        app.setAccount("account","LCYEnDaddressENBYCEYD235NSD");
+        cryptoCurrencyRPC.setAccount("account","LCYEnDaddressENBYCEYD235NSD");
         
         //Similarly, all the API methods can be called.
     }
