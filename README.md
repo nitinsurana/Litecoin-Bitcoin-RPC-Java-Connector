@@ -34,13 +34,38 @@ Sample Usage
         final String rpcPassword = "password";
         final String rpcHost = "localhost";
         final String rpcPort = "9332";
-        App app = new App(rpcUser, rpcPassword, rpcHost, rpcPort);
+        CryptoCurrencyRPC cryptoCurrencyRPC = new CryptoCurrencyRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
 
-        app.setAccount("account","LCYEnDaddressENBYCEYD235NSD");
+        cryptoCurrencyRPC.setAccount("account","LCYEnDaddressENBYCEYD235NSD");
         
         //Similarly, all the API methods can be called.
     }
 
+### Blockchain Events 
+(part of the code was taken from https://github.com/johannbarbie/BitcoindClient4J)
 
+The library also captures notifications from Bitcoind using the startup configuration. Launch your deamon with those parameters:
+```bash
+  ./bitcoind  -walletnotify="echo '%s' | nc 127.0.0.1 4002" 
+              -alertnotify="echo '%s' | nc 127.0.0.1 4003" 
+              -daemon
+```
+
+You can register observers to capture events of wallets, and alerts:
+```java
+    WalletListener walletListener = new WalletListener(cryptoCurrencyRPC, 4002);
+    walletListener.addObserver(new Observer() {
+        @Override
+        public void update(Observable o, Object arg) {
+            System.out.println("Amount of transaction: " + ((Transaction)arg).getAmount());
+        }
+    });
+
+```
+
+Make sure to close sockets later:
+```java
+  walletListener.stop();
+```
 
 > Written with [StackEdit](https://stackedit.io/).
