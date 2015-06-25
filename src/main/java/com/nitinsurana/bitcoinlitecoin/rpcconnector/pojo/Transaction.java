@@ -1,5 +1,7 @@
 package com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -7,17 +9,21 @@ import java.util.List;
 public class Transaction {
 	
 	public enum Category {
-	    RECEIVE("receive"),
-	    SEND("send"),
-	    CONFLICTED("conflicted"),
-	    MOVE("move");
+		@SerializedName("receive")
+	    RECEIVE,
+		@SerializedName("send")
+		SEND,
+		@SerializedName("conflicted")
+		CONFLICTED,
+		@SerializedName("move")
+	    MOVE;
 	    
-	    private String text;
+	    /*private String text;
 
 	    Category(String text) {
 	      this.text = text;
 	    }
-	    
+
 	    final String value() {
 	        return this.text;
 	    }
@@ -25,7 +31,7 @@ public class Transaction {
 	    public String getText() {
 	      return this.text;
 	    }
-	    
+
 	    public static Category fromString(String text) {
 	      if (text != null) {
 	        for (Category b : Category.values()) {
@@ -35,7 +41,7 @@ public class Transaction {
 	        }
 	      }
 	      return null;
-	    }
+	    }*/
 	}
 
 
