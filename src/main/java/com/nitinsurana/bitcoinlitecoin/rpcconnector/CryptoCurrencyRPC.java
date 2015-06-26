@@ -19,7 +19,7 @@ import java.util.List;
 
 public class CryptoCurrencyRPC {
 
-    public static final Logger LOG = Logger.getLogger(CryptoCurrencyRPC.class);
+    public static final Logger LOG = Logger.getLogger("rpcLogger");
 
     private WebClient client;
     private String baseUrl;
@@ -33,9 +33,7 @@ public class CryptoCurrencyRPC {
         client.getOptions().setPrintContentOnFailingStatusCode(false);
         client.getOptions().setJavaScriptEnabled(false);
         client.getOptions().setCssEnabled(false);
-
         baseUrl = new String("http://" + rpcUser + ":" + rpcPassword + "@" + rpcHost + ":" + rpcPort + "/");
-        //LOG.info("Base RPC URL : " + baseUrl);
 
         try {
             if (client.getPage(baseUrl).getWebResponse().getStatusCode() == 401) {  //401 is Http Unauthorized
@@ -454,18 +452,6 @@ public class CryptoCurrencyRPC {
         return jsonObj.get("result").getAsString();
     }
 
-    public static void main(String[] args) throws Exception {
-        final String rpcUser = "Nitin";
-        final String rpcPassword = "magicmaker07";
-        final String rpcHost = "localhost";
-        final String rpcPort = "9332";
-        CryptoCurrencyRPC cryptoCurrencyRPC = new CryptoCurrencyRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
-
-        cryptoCurrencyRPC.listTransactions("nn", 11, 0);
-        cryptoCurrencyRPC.listTransactions("", 11, 0);
-        cryptoCurrencyRPC.listTransactions("nnn", 11, 0);
-    }
-
     private JsonObject callAPIMethod(APICalls callMethod, Object... params) throws CallApiBitcoindException {
         try {
             JsonObject jsonObj = null;
@@ -480,7 +466,14 @@ public class CryptoCurrencyRPC {
             req.setRequestBody(new Gson().toJson(body, JSONRequestBody.class));
             WebResponse resp = client.getPage(req).getWebResponse();
             jsonObj = new JsonParser().parse(resp.getContentAsString()).getAsJsonObject();
-            LOG.info("RPC Response : " + jsonObj);
+
+            StringBuffer buffer = new StringBuffer("");
+            for (Object item : params) {
+                    buffer.append(item.toString() + " | ");
+            }
+            LOG.info("Bitcoin RPC Request: Method: " + callMethod + " Params: " + buffer.toString() +
+                    "\nBitcoin RPC Response : " + jsonObj);
+
             return jsonObj;
         } catch (Exception e) {
             throw new CallApiBitcoindException(e.getMessage());

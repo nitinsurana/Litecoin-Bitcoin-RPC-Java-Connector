@@ -4,15 +4,12 @@
  * and open the template in the editor.
  */
 package com.nitinsurana.bitcoinlitecoin.rpcconnector.exception;
-import java.util.logging.Logger;
 
 /**
  *
  * @author hp
  */
-public class RpcInvalidResponseException extends Exception {
-    
-    public static final Logger LOG = Logger.getLogger(RpcInvalidResponseException.class.getName());
+public class RpcInvalidResponseException extends BitcoindException {
     
     public RpcInvalidResponseException(String message) {
         super(message);
