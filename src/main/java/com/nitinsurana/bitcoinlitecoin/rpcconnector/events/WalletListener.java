@@ -1,7 +1,7 @@
 package com.nitinsurana.bitcoinlitecoin.rpcconnector.events;
 
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.CryptoCurrencyRPC;
-import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.BitcoindException;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
 import org.apache.log4j.Logger;
 
@@ -45,7 +45,7 @@ public class WalletListener extends Observable implements Observer {
 					LOG.info("WalletEvent. TxId: " + tx.getTxid() + " Amount: " + tx.getAmount());
 					setChanged();
 					notifyObservers(tx);
-				} catch (BitcoindException e) {
+				} catch (CryptoCurrencyRpcException e) {
 					e.printStackTrace();
 				}
 

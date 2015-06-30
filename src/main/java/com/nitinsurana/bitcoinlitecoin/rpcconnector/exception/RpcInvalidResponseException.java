@@ -9,7 +9,7 @@ package com.nitinsurana.bitcoinlitecoin.rpcconnector.exception;
  *
  * @author hp
  */
-public class RpcInvalidResponseException extends BitcoindException {
+public class RpcInvalidResponseException extends CryptoCurrencyRpcException {
     
     public RpcInvalidResponseException(String message) {
         super(message);

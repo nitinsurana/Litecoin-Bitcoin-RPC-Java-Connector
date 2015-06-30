@@ -9,7 +9,7 @@ package com.nitinsurana.bitcoinlitecoin.rpcconnector.exception;
  *
  * @author hp
  */
-public class AuthenticationException extends BitcoindException {
+public class AuthenticationException extends CryptoCurrencyRpcException {
 
     public AuthenticationException() {
         super("Invalid RPC Credentials");
