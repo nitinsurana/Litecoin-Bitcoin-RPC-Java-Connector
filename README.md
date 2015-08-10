@@ -68,4 +68,9 @@ Make sure to close sockets later:
   walletListener.stop();
 ```
 
+License
+=======
+Copyright (c) 2014-2015 Nitin Surana | Licensed under the MIT license.
+
+
 > Written with [StackEdit](https://stackedit.io/).
