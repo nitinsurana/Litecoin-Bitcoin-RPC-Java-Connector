@@ -5,15 +5,11 @@
  */
 package com.nitinsurana.bitcoinlitecoin.rpcconnector.exception;
 
-import java.util.logging.Logger;
-
 /**
  *
  * @author hp
  */
-public class AuthenticationException extends Exception {
-
-    public static final Logger LOG = Logger.getLogger(AuthenticationException.class.getName());
+public class AuthenticationException extends CryptoCurrencyRpcException {
 
     public AuthenticationException() {
         super("Invalid RPC Credentials");

@@ -1,8 +1,9 @@
 package com.nitinsurana.bitcoinlitecoin.rpcconnector.events;
 
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.CryptoCurrencyRPC;
-import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.BitcoindException;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -13,6 +14,7 @@ import java.util.Observer;
  * Bitcoind must be configured with -walletnotify parameter.
  */
 public class WalletListener extends Observable implements Observer {
+	public static final Logger LOG = Logger.getLogger("rpcLogger");
 
 	final private Observable walletListener;
 	final private CryptoCurrencyRPC client;
@@ -40,9 +42,10 @@ public class WalletListener extends Observable implements Observer {
 			public void run() {
 				try {
 					Transaction tx = client.getTransaction(value);
+					LOG.info("WalletEvent. TxId: " + tx.getTxid() + " Amount: " + tx.getAmount());
 					setChanged();
 					notifyObservers(tx);
-				} catch (BitcoindException e) {
+				} catch (CryptoCurrencyRpcException e) {
 					e.printStackTrace();
 				}
 

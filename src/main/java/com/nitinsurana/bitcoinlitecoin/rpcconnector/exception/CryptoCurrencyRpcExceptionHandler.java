@@ -5,9 +5,9 @@ import com.google.gson.JsonObject;
 /**
  * Created by d.romantsov on 22.05.2015.
  */
-public class BitcoindExceptionHandler {
+public class CryptoCurrencyRpcExceptionHandler {
 
-    public void checkException(JsonObject response) throws BitcoindException {
+    public void checkException(JsonObject response) throws CryptoCurrencyRpcException {
         if (response.get("error") != null && response.get("error").isJsonObject() == true) {
             JsonObject errorJson = response.get("error").getAsJsonObject();
             String message = errorJson.get("message").getAsString();
@@ -17,7 +17,7 @@ public class BitcoindExceptionHandler {
                 case -6:
                     throw new InsufficientFundsException(message);
                 default:
-                    throw new BitcoindException(message);
+                    throw new CryptoCurrencyRpcException(message);
             }
         }
     }

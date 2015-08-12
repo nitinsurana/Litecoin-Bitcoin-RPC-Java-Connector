@@ -13,7 +13,7 @@ import java.util.Observable;
  * Basic class for implementation CryptoCurrencyListener's. Contains work with ports and streams.
  */
 public class BitcoinDListener extends Observable implements Runnable {
-	public static final Logger LOG = Logger.getLogger(BitcoinDListener.class);
+	public static final Logger LOG = Logger.getLogger("rpcLogger");
 	private final ServerSocket server;
 	private int port;
 
@@ -30,7 +30,7 @@ public class BitcoinDListener extends Observable implements Runnable {
 	@Override
 	public void run() {
 		LOG.info("Thread " + Thread.currentThread().getName()
-				+ "started lintening on " + port);
+				+ " started listening on " + port);
 		while (!Thread.currentThread().isInterrupted()) {
 			Socket connection = null;
 			try {

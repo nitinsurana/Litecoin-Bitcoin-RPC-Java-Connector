@@ -6,9 +6,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.AuthenticationException;
-import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.BitcoindException;
-import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.BitcoindExceptionHandler;
-import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CallApiBitcoindException;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcExceptionHandler;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CallApiCryptoCurrencyRpcException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
 import org.apache.log4j.Logger;
 
@@ -19,11 +19,11 @@ import java.util.List;
 
 public class CryptoCurrencyRPC {
 
-    public static final Logger LOG = Logger.getLogger(CryptoCurrencyRPC.class);
+    public static final Logger LOG = Logger.getLogger("rpcLogger");
 
     private WebClient client;
     private String baseUrl;
-    private BitcoindExceptionHandler bitcoindExceptionHandler = new BitcoindExceptionHandler();
+    private CryptoCurrencyRpcExceptionHandler cryptoCurrencyRpcExceptionHandler = new CryptoCurrencyRpcExceptionHandler();
     private Gson gson = new Gson();
 
     public CryptoCurrencyRPC(String rpcUser, String rpcPassword, String rpcHost, String rpcPort) throws AuthenticationException {
@@ -33,9 +33,7 @@ public class CryptoCurrencyRPC {
         client.getOptions().setPrintContentOnFailingStatusCode(false);
         client.getOptions().setJavaScriptEnabled(false);
         client.getOptions().setCssEnabled(false);
-
         baseUrl = new String("http://" + rpcUser + ":" + rpcPassword + "@" + rpcHost + ":" + rpcPort + "/");
-        //LOG.info("Base RPC URL : " + baseUrl);
 
         try {
             if (client.getPage(baseUrl).getWebResponse().getStatusCode() == 401) {  //401 is Http Unauthorized
@@ -54,7 +52,7 @@ public class CryptoCurrencyRPC {
      * @return
      * @throws Exception
      */
-    public boolean backupWallet(String destination) throws BitcoindException {
+    public boolean backupWallet(String destination) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.BACKUP_WALLET, destination);
         if (jsonObj.get("error") == null) {
             return true;
@@ -67,11 +65,11 @@ public class CryptoCurrencyRPC {
      *
      * @param hex
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public JsonObject decodeRawTransaction(String hex) throws BitcoindException {
+    public JsonObject decodeRawTransaction(String hex) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.DECODE_RAW_TRANSACTION, hex);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonObject();
     }
 
@@ -80,11 +78,11 @@ public class CryptoCurrencyRPC {
      *
      * @param address
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public String dumpPrivateKey(String address) throws BitcoindException {
+    public String dumpPrivateKey(String address) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.DUMP_PRIVATE_KEY, address);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -93,11 +91,11 @@ public class CryptoCurrencyRPC {
      *
      * @param txid
      * @return returns the hex string for the given transaction id
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public String getRawTransaction(String txid) throws BitcoindException {
+    public String getRawTransaction(String txid) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_RAW_TRANSACTION, txid);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -106,11 +104,11 @@ public class CryptoCurrencyRPC {
      *
      * @param address
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public String getAccount(String address) throws BitcoindException {
+    public String getAccount(String address) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_ACCOUNT, address);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -120,11 +118,11 @@ public class CryptoCurrencyRPC {
      *
      * @param account
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public String getAccountAddress(String account) throws BitcoindException {
+    public String getAccountAddress(String account) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_ACCOUNT_ADDRESS, account);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -133,11 +131,11 @@ public class CryptoCurrencyRPC {
      *
      * @param account
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public JsonArray getAddressesByAccount(String account) throws BitcoindException {
+    public JsonArray getAddressesByAccount(String account) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_ADDRESSES_BY_ACCOUNT, account);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -146,11 +144,11 @@ public class CryptoCurrencyRPC {
      *
      * @param account
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public BigDecimal getBalance(String account) throws BitcoindException {
+    public BigDecimal getBalance(String account) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_BALANCE, account);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsBigDecimal();
     }
 
@@ -158,11 +156,11 @@ public class CryptoCurrencyRPC {
      * Returns the wallet's total available balance.
      *
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public BigDecimal getBalance() throws BitcoindException {
+    public BigDecimal getBalance() throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_BALANCE);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsBigDecimal();
     }
 
@@ -172,11 +170,11 @@ public class CryptoCurrencyRPC {
      *
      * @param account
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public BigDecimal getReceivedByAccount(String account) throws BitcoindException {
+    public BigDecimal getReceivedByAccount(String account) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_RECEIVED_BY_ACCOUNT, account);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsBigDecimal();
     }
 
@@ -184,11 +182,11 @@ public class CryptoCurrencyRPC {
      * Returns a new address for receiving payments.
      *
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public String getNewAddress() throws BitcoindException {
+    public String getNewAddress() throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_NEW_ADDRESS);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -197,11 +195,11 @@ public class CryptoCurrencyRPC {
      *
      * @param account
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public String getNewAddress(String account) throws BitcoindException {
+    public String getNewAddress(String account) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_NEW_ADDRESS, account);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
@@ -210,11 +208,11 @@ public class CryptoCurrencyRPC {
      *
      * @param address
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public BigDecimal getReceivedByAddress(String address) throws BitcoindException {
+    public BigDecimal getReceivedByAddress(String address) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_RECEIVED_BY_ADDRESS, address);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsBigDecimal();
     }
 
@@ -225,11 +223,11 @@ public class CryptoCurrencyRPC {
      *
      * @param txid
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public Transaction getTransaction(String txid) throws BitcoindException {
+    public Transaction getTransaction(String txid) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_TRANSACTION, txid);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
     }
 
@@ -238,11 +236,11 @@ public class CryptoCurrencyRPC {
      * values.
      *
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public JsonObject listAccounts() throws BitcoindException {
+    public JsonObject listAccounts() throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_ACCOUNTS);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonObject();
     }
 
@@ -251,9 +249,9 @@ public class CryptoCurrencyRPC {
      *
      * @return
      */
-    public JsonArray listReceivedByAccount() throws BitcoindException {
+    public JsonArray listReceivedByAccount() throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_RECEIVED_BY_ACCOUNT);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -262,11 +260,11 @@ public class CryptoCurrencyRPC {
      * confirmations
      *
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public JsonArray listReceivedByAddress() throws BitcoindException {
+    public JsonArray listReceivedByAddress() throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_RECEIVED_BY_ADDRESS);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -280,11 +278,11 @@ public class CryptoCurrencyRPC {
      * @param toAddress
      * @param amount
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public String sendFrom(String fromAccount, String toAddress, BigDecimal amount) throws BitcoindException {
+    public String sendFrom(String fromAccount, String toAddress, BigDecimal amount) throws CryptoCurrencyRpcException {
         JsonObject response = callAPIMethod(APICalls.SEND_FROM, fromAccount, toAddress, amount);
-        bitcoindExceptionHandler.checkException(response);
+        cryptoCurrencyRpcExceptionHandler.checkException(response);
         return response.get("result").getAsString();
     }
 
@@ -294,17 +292,17 @@ public class CryptoCurrencyRPC {
      * @param toAddress
      * @param amount
      * @return TransactionID
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public String sendToAddress(String toAddress, BigDecimal amount) throws BitcoindException{
+    public String sendToAddress(String toAddress, BigDecimal amount) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.SEND_TO_ADDRESS, toAddress, amount);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
 
-    public boolean validateAddress(String address) throws BitcoindException {
+    public boolean validateAddress(String address) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.VALIDATE_ADDRESS, address);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonObject().get("isvalid").getAsBoolean();
     }
 
@@ -316,11 +314,11 @@ public class CryptoCurrencyRPC {
      * @param address
      * @param account
      *
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public void setAccount(String address, String account) throws BitcoindException {
+    public void setAccount(String address, String account) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.SET_ACCOUNT, address, account);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
     }
 
     /**
@@ -331,11 +329,11 @@ public class CryptoCurrencyRPC {
      * @param count
      * @param from
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public List<Transaction> listTransactions(String account, int count, int from) throws BitcoindException {
+    public List<Transaction> listTransactions(String account, int count, int from) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_TRANSACTIONS, account, count, from);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
 
         return Arrays.asList(gson.fromJson(jsonObj.get("result").getAsJsonArray(), Transaction[].class));
     }
@@ -347,11 +345,11 @@ public class CryptoCurrencyRPC {
      * @param minconf
      * @param maxconf
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public JsonArray listUnspent(int minconf, int maxconf) throws BitcoindException {
+    public JsonArray listUnspent(int minconf, int maxconf) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf, maxconf);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
 
         return jsonObj.get("result").getAsJsonArray();
     }
@@ -364,12 +362,12 @@ public class CryptoCurrencyRPC {
      * @param minconf
      * @param address
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public JsonArray listUnspent(int minconf, String[] address) throws BitcoindException {
+    public JsonArray listUnspent(int minconf, String[] address) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf, address);
 
-                bitcoindExceptionHandler.checkException(jsonObj);
+                cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -380,11 +378,11 @@ public class CryptoCurrencyRPC {
      * 
      * @param minconf
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public JsonArray listUnspent(int minconf) throws BitcoindException {
+    public JsonArray listUnspent(int minconf) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonArray();
     }
 
@@ -397,11 +395,11 @@ public class CryptoCurrencyRPC {
      * @param maxconf
      * @param address
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public JsonArray listUnspent(int minconf, int maxconf, String[] address) throws BitcoindException {
+    public JsonArray listUnspent(int minconf, int maxconf, String[] address) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_UNSPENT, minconf, maxconf, address);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
 
         return jsonObj.get("result").getAsJsonArray();
     }
@@ -415,11 +413,11 @@ public class CryptoCurrencyRPC {
      * @param out is an JsonObject with the receiving addresses as properties
      * and the receiving amount as value of each property(=address)
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public Transaction createRawTransaction(JsonObject[] prevOut, JsonObject out) throws BitcoindException {
+    public Transaction createRawTransaction(JsonObject[] prevOut, JsonObject out) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.CREATE_RAW_TRANSACTION, prevOut, out);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
 
         return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
     }
@@ -430,11 +428,11 @@ public class CryptoCurrencyRPC {
      *
      * @param hexString
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public Transaction signRawTransaction(String hexString) throws BitcoindException {
+    public Transaction signRawTransaction(String hexString) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.SIGN_RAW_TRANSACTION,hexString);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
 
         return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
     }
@@ -445,28 +443,16 @@ public class CryptoCurrencyRPC {
      *
      * @param hexString
      * @return
-     * @throws BitcoindException
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public String sendRawTransaction(String hexString) throws BitcoindException {
+    public String sendRawTransaction(String hexString) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.SEND_RAW_TRANSACTION,hexString);
-        bitcoindExceptionHandler.checkException(jsonObj);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
 
         return jsonObj.get("result").getAsString();
     }
 
-    public static void main(String[] args) throws Exception {
-        final String rpcUser = "Nitin";
-        final String rpcPassword = "magicmaker07";
-        final String rpcHost = "localhost";
-        final String rpcPort = "9332";
-        CryptoCurrencyRPC cryptoCurrencyRPC = new CryptoCurrencyRPC(rpcUser, rpcPassword, rpcHost, rpcPort);
-
-        cryptoCurrencyRPC.listTransactions("nn", 11, 0);
-        cryptoCurrencyRPC.listTransactions("", 11, 0);
-        cryptoCurrencyRPC.listTransactions("nnn", 11, 0);
-    }
-
-    private JsonObject callAPIMethod(APICalls callMethod, Object... params) throws CallApiBitcoindException {
+    private JsonObject callAPIMethod(APICalls callMethod, Object... params) throws CallApiCryptoCurrencyRpcException {
         try {
             JsonObject jsonObj = null;
             WebRequest req = new WebRequest(new URL(baseUrl));
@@ -480,10 +466,17 @@ public class CryptoCurrencyRPC {
             req.setRequestBody(new Gson().toJson(body, JSONRequestBody.class));
             WebResponse resp = client.getPage(req).getWebResponse();
             jsonObj = new JsonParser().parse(resp.getContentAsString()).getAsJsonObject();
-            LOG.info("RPC Response : " + jsonObj);
+
+            StringBuffer buffer = new StringBuffer("");
+            for (Object item : params) {
+                    buffer.append(item.toString() + " | ");
+            }
+            LOG.info("Bitcoin RPC Request: Method: " + callMethod + " Params: " + buffer.toString() +
+                    "\nBitcoin RPC Response : " + jsonObj);
+
             return jsonObj;
         } catch (Exception e) {
-            throw new CallApiBitcoindException(e.getMessage());
+            throw new CallApiCryptoCurrencyRpcException(e.getMessage());
         }
     }
 }
