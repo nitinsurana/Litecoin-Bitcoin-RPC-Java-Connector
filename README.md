@@ -57,7 +57,32 @@ You can register observers to capture events of wallets, and alerts:
     walletListener.addObserver(new Observer() {
         @Override
         public void update(Observable o, Object arg) {
-            System.out.println("Amount of transaction: " + ((Transaction)arg).getAmount());
+            Transaction tx = (Transaction) arg;
+            BigDecimal amount = tx.getDetails().get(0).getAmount(); //amount of transaction
+            String txId = tx.getTxid(); //id of transaction
+            Transaction txDetails = tx.getDetails().get(0); //transaction details
+
+            if (tx.getDetails().size() == 2) {
+                //both side of translation inside your bitcoind node
+                String sendToAddress = txDetails.getAddress();
+                String receiveAddress = tx.getDetails().get(1).getAddress();
+                BigDecimal fee = tx.getFee();
+            } else {
+                //one side of translation outside of your bitcoind node
+                switch (txDetails.getCategory()) {
+                    case RECEIVE: //your account on bitcoind receive bitcoin
+                        String receiveAddress = txDetails.getAddress();
+                        break;
+                    case SEND:  //your account on bitcoind send bitcoin
+                        //the address to which the coins was sent
+                        String sendToAddress = txDetails.getAddress();
+                        //account in your bitcoind from which the coins was sent
+                        String sendFromAccountName = txDetails.getAccount();
+                        BigDecimal fee = txDetails.getFee();
+                        break;
+                    default:
+                        //Strange transaction: MOVE or CONFLICTED
+            }
         }
     });
 
