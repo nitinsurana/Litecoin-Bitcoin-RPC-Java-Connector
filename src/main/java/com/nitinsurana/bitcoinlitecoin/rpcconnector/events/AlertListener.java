@@ -15,15 +15,13 @@ public class AlertListener extends Observable implements Observer {
 
 	public AlertListener(int port) throws IOException {
 		alertListener = new BitcoinDListener(port);
+		alertListener.addObserver(this);
+		listener = new Thread((Runnable) alertListener, "alertListener");
+		listener.start();
 	}
 
 	@Override
 	public synchronized void addObserver(Observer o) {
-		if (null == listener) {
-			alertListener.addObserver(this);
-			listener = new Thread((Runnable) alertListener, "alertListener");
-			listener.start();
-		}
 		super.addObserver(o);
 	}
 

@@ -324,6 +324,7 @@ public class CryptoCurrencyRPC {
     /**
      * Returns up to [count] most recent transactions skipping the first [from]
      * transactions for account [account].
+     * Sorting does not work correctly. https://github.com/bitcoin/bitcoin/issues/2853
      *
      * @param account
      * @param count

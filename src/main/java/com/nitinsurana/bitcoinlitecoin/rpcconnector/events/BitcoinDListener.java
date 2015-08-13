@@ -45,16 +45,17 @@ public class BitcoinDListener extends Observable implements Runnable {
 			    if ((line = reader.readLine()) != null) {
 				    setChanged();
 					notifyObservers(line);
-					connection.close();
 			    }
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
 				// sockets are closed when complete.
 				try {
-					if (connection != null)
+					if (connection != null) {
 						connection.close();
+					}
 				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}

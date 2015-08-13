@@ -23,15 +23,13 @@ public class WalletListener extends Observable implements Observer {
 	public WalletListener(final CryptoCurrencyRPC client, int port) throws IOException {
 		walletListener = new BitcoinDListener(port);
 		this.client = client;
+		walletListener.addObserver(this);
+		listener = new Thread((Runnable) walletListener, "walletListener");
+		listener.start();
 	}
 
 	@Override
 	public synchronized void addObserver(Observer o) {
-		if (listener == null) {
-			walletListener.addObserver(this);
-			listener = new Thread((Runnable) walletListener, "walletListener");
-			listener.start();
-		}
 		super.addObserver(o);
 	}
 
