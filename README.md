@@ -68,4 +68,16 @@ Make sure to close sockets later:
   walletListener.stop();
 ```
 
+### Logs and exception handling 
+
+All log files are written via log4j DailyRollingFileAppender and saved in /var/log/bitcoin-rpc/ folder.
+
+Library can generate listed below types of Runtime exception:
+
+- AuthenticationException
+- CallApiCryptoCurrencyRpcException
+- CryptoCurrencyRpcException (base class)
+- InsufficientFundsException
+- RpcInvalidResponseException
+
 > Written with [StackEdit](https://stackedit.io/).
