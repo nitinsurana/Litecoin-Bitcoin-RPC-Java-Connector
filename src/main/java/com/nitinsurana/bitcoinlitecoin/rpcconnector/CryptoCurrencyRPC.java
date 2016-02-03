@@ -190,6 +190,19 @@ public class CryptoCurrencyRPC {
         return jsonObj.get("result").getAsString();
     }
 
+
+    /**
+     * Returns an object containing various state info.
+     *
+     * @return
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
+     */
+    public String getInfo() throws CryptoCurrencyRpcException {
+        JsonObject jsonObj = callAPIMethod(APICalls.GET_INFO);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
+        return jsonObj.toString();
+    }
+
     /**
      * Returns a new address for receiving payments.
      *
@@ -468,9 +481,9 @@ public class CryptoCurrencyRPC {
             WebResponse resp = client.getPage(req).getWebResponse();
             jsonObj = new JsonParser().parse(resp.getContentAsString()).getAsJsonObject();
 
-            StringBuffer buffer = new StringBuffer("");
+            StringBuilder buffer = new StringBuilder("");
             for (Object item : params) {
-                    buffer.append(item.toString() + " | ");
+                    buffer.append(item).append(" | ");
             }
             LOG.info("Bitcoin RPC Request: Method: " + callMethod + " Params: " + buffer.toString() +
                     "\nBitcoin RPC Response : " + jsonObj);
