@@ -3,7 +3,7 @@
 
     <groupId>com.nitinsurana</groupId>
     <artifactId>Litecoin-Bitcoin-RPC-Java-Connector</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <packaging>jar</packaging>
 
     <name>Litecoin-Bitcoin-RPC-Java-Connector</name>
@@ -156,8 +156,7 @@
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>2.15</version>
-            <scope>compile</scope>
+            <version>2.19</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
