@@ -3,7 +3,7 @@
 
     <groupId>com.nitinsurana</groupId>
     <artifactId>Litecoin-Bitcoin-RPC-Java-Connector</artifactId>
-    <version>2.0.2</version>
+    <version>2.1.0</version>
     <packaging>jar</packaging>
 
     <name>Litecoin-Bitcoin-RPC-Java-Connector</name>
@@ -149,26 +149,28 @@
             <version>2.3.1</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
-        <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
-            <artifactId>htmlunit</artifactId>
-            <version>2.19</version>
-        </dependency>
+
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.4.01</version>
         </dependency>
 
     </dependencies>

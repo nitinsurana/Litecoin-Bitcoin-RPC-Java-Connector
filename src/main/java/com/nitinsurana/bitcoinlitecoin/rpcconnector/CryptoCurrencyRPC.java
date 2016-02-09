@@ -1,47 +1,68 @@
 package com.nitinsurana.bitcoinlitecoin.rpcconnector;
 
-import com.gargoylesoftware.htmlunit.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.AuthenticationException;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CallApiCryptoCurrencyRpcException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcExceptionHandler;
-import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CallApiCryptoCurrencyRpcException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class CryptoCurrencyRPC {
 
     public static final Logger LOG = Logger.getLogger("rpcLogger");
 
-    private WebClient client;
-    private String baseUrl;
     private CryptoCurrencyRpcExceptionHandler cryptoCurrencyRpcExceptionHandler = new CryptoCurrencyRpcExceptionHandler();
     private Gson gson = new Gson();
+    private JsonParser jsonParser = new JsonParser();
 
-    public CryptoCurrencyRPC(String rpcUser, String rpcPassword, String rpcHost, String rpcPort) throws AuthenticationException {
-        client = new WebClient(BrowserVersion.CHROME);
-        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        client.getOptions().setThrowExceptionOnScriptError(false);
-        client.getOptions().setPrintContentOnFailingStatusCode(false);
-        client.getOptions().setJavaScriptEnabled(false);
-        client.getOptions().setCssEnabled(false);
-        baseUrl = new String("http://" + rpcUser + ":" + rpcPassword + "@" + rpcHost + ":" + rpcPort + "/");
+    private static final String CHARACTER_ENCODING = "UTF-8";
+    private String uri;
+    private CloseableHttpClient httpClient;
+    private HttpHost targetHost;
+    private HttpClientContext context;
+    private AtomicLong id = new AtomicLong(1L);
 
-        try {
-            if (client.getPage(baseUrl).getWebResponse().getStatusCode() == 401) {  //401 is Http Unauthorized
-                throw new AuthenticationException();
-            }
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage(), ex);
-        }
+    public CryptoCurrencyRPC(final String rpcUser, final String rpcPassword, String rpcHost, String rpcPort) {
+        this.uri = "/";
+
+        httpClient = HttpClients.createDefault();
+        targetHost = new HttpHost(rpcHost, Integer.parseInt(rpcPort), "http");
+        CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        credsProvider.setCredentials(new AuthScope(targetHost.getHostName(), targetHost.getPort()),
+                new UsernamePasswordCredentials(rpcUser, rpcPassword));
+
+        AuthCache authCache = new BasicAuthCache();
+        BasicScheme basicAuth = new BasicScheme();
+        authCache.put(targetHost, basicAuth);
+
+        context = HttpClientContext.create();
+        context.setCredentialsProvider(credsProvider);
+        context.setAuthCache(authCache);
+
     }
 
     /**
@@ -466,31 +487,67 @@ public class CryptoCurrencyRPC {
         return jsonObj.get("result").getAsString();
     }
 
+
+    //Implementation from https://github.com/SulacoSoft/BitcoindConnector4J repository
     private JsonObject callAPIMethod(APICalls callMethod, Object... params) throws CallApiCryptoCurrencyRpcException {
         try {
-            JsonObject jsonObj = null;
-            WebRequest req = new WebRequest(new URL(baseUrl));
-            req.setAdditionalHeader("Content-type", "application/json");
-            req.setHttpMethod(HttpMethod.POST);
-            JSONRequestBody body = new JSONRequestBody();
-            body.setMethod(callMethod.toString());
-            if (params != null && params.length > 0) {
-                body.setParams(params);
-            }
-            req.setRequestBody(new Gson().toJson(body, JSONRequestBody.class));
-            WebResponse resp = client.getPage(req).getWebResponse();
-            jsonObj = new JsonParser().parse(resp.getContentAsString()).getAsJsonObject();
+            String jsonRequest = String.format("{\"jsonrpc\": \"2.0\", \"method\": \"%s\", \"params\": [%s], \"id\": %s}",
+                    callMethod.toString(), buildParamsString(params), id.getAndIncrement());
 
-            StringBuilder buffer = new StringBuilder("");
-            for (Object item : params) {
-                    buffer.append(item).append(" | ");
-            }
-            LOG.info("Bitcoin RPC Request: Method: " + callMethod + " Params: " + buffer.toString() +
-                    "\nBitcoin RPC Response : " + jsonObj);
+            HttpPost httpPost = new HttpPost(uri);
+            httpPost.setEntity(new ByteArrayEntity(jsonRequest.getBytes(CHARACTER_ENCODING)));
+            CloseableHttpResponse response = httpClient.execute(targetHost, httpPost, context);
+            try {
+                checkHttpErrors(response.getStatusLine().getStatusCode());
 
-            return jsonObj;
-        } catch (Exception e) {
+                String jsonResponse = IOUtils.toString(response.getEntity().getContent(), CHARACTER_ENCODING);
+                logRequest(callMethod.toString(), jsonResponse, params);
+
+                return jsonParser.parse(jsonResponse).getAsJsonObject();
+            } finally {
+                response.close();
+            }
+        } catch (Throwable e) {
             throw new CallApiCryptoCurrencyRpcException(e.getMessage());
         }
+
+    }
+
+    private String buildParamsString(Object[] args) {
+        StringBuilder params = new StringBuilder();
+        if (args != null && args.length > 0) {
+            for (int i = 0; i < args.length; i++) {
+                if (i > 0)
+                    params.append(",");
+                Object arg = args[i];
+                if (arg instanceof String)
+                    params.append(String.format("\"%s\"", arg));
+                else
+                    params.append(String.format("%s", arg));
+            }
+        }
+        return params.toString();
+    }
+
+    private void checkHttpErrors(int statusCode) {
+        if (statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            if (statusCode == HttpStatus.SC_UNAUTHORIZED)
+                throw new CryptoCurrencyRpcException(String.format(
+                        "Bitcoind JSON-RPC HTTP error (Probably an incorrect username or password). HTTP Status-Code %s",
+                        statusCode));
+            else
+                throw new CryptoCurrencyRpcException(String.format("Bitcoind JSON-RPC HTTP error. HTTP Status-Code %s",
+                        statusCode));
+        }
+    }
+
+    private void logRequest(String callMethod, String jsonResponse, Object[] params) {
+        StringBuffer buffer = new StringBuffer("");
+        for (Object item : params) {
+            buffer.append(item).append(" | ");
+        }
+        LOG.info("Bitcoin RPC Request: Method: " + callMethod + " Params: " + buffer.toString() +
+                "\nBitcoin RPC Response : " + jsonResponse);
+
     }
 }
