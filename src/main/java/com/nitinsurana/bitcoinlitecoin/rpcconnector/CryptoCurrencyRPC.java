@@ -50,7 +50,7 @@ public class CryptoCurrencyRPC {
         this.uri = "/";
 
         httpClient = HttpClients.createDefault();
-        targetHost = new HttpHost(rpcHost, Integer.parseInt(rpcPort), "http");
+        targetHost = new HttpHost(rpcHost, Integer.parseInt(rpcPort), "https");
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
         credsProvider.setCredentials(new AuthScope(targetHost.getHostName(), targetHost.getPort()),
                 new UsernamePasswordCredentials(rpcUser, rpcPassword));
@@ -62,7 +62,6 @@ public class CryptoCurrencyRPC {
         context = HttpClientContext.create();
         context.setCredentialsProvider(credsProvider);
         context.setAuthCache(authCache);
-
     }
 
     /**
