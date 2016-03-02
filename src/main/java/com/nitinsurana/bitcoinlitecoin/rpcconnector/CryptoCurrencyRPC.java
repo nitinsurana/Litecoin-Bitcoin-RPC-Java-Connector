@@ -542,12 +542,13 @@ public class CryptoCurrencyRPC {
     }
 
     private void logRequest(String callMethod, String jsonResponse, Object[] params) {
-        StringBuffer buffer = new StringBuffer("");
-        for (Object item : params) {
-            buffer.append(item).append(" | ");
+        if (!callMethod.equals(APICalls.LIST_TRANSACTIONS.toString())) {
+            StringBuffer buffer = new StringBuffer("");
+            for (Object item : params) {
+                buffer.append(item).append(" | ");
+            }
+            LOG.info("Bitcoin RPC Request: Method: " + callMethod + " Params: " + buffer.toString() +
+                    "\nBitcoin RPC Response : " + jsonResponse);
         }
-        LOG.info("Bitcoin RPC Request: Method: " + callMethod + " Params: " + buffer.toString() +
-                "\nBitcoin RPC Response : " + jsonResponse);
-
     }
 }
