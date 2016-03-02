@@ -18,7 +18,6 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
@@ -50,8 +49,8 @@ public class CryptoCurrencyRPC {
     public CryptoCurrencyRPC(final String rpcUser, final String rpcPassword, String rpcHost, String rpcPort) {
         this.uri = "/";
 
-        httpClient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
-        targetHost = new HttpHost(rpcHost, Integer.parseInt(rpcPort), "https");
+        httpClient = HttpClients.createDefault();
+        targetHost = new HttpHost(rpcHost, Integer.parseInt(rpcPort), "http");
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
         credsProvider.setCredentials(new AuthScope(targetHost.getHostName(), targetHost.getPort()),
                 new UsernamePasswordCredentials(rpcUser, rpcPassword));
@@ -63,6 +62,7 @@ public class CryptoCurrencyRPC {
         context = HttpClientContext.create();
         context.setCredentialsProvider(credsProvider);
         context.setAuthCache(authCache);
+
     }
 
     /**
