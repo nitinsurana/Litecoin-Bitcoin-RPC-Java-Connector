@@ -23,6 +23,7 @@ public enum APICalls {
     SEND_RAW_TRANSACTION("sendrawtransaction"),
     SET_ACCOUNT("setaccount"),
     SEND_TO_ADDRESS("sendtoaddress"),
+    MOVE("move"),
     GET_ADDRESSES_BY_ACCOUNT("getaddressesbyaccount"),
     GET_RECEIVED_BY_ACCOUNT("getreceivedbyaccount"),
     GET_RECEIVED_BY_ADDRESS("getreceivedbyaddress"),

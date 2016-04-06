@@ -321,6 +321,21 @@ public class CryptoCurrencyRPC {
     }
 
     /**
+     *	Move from one account in your wallet to another
+     *
+     * @param fromAccount
+     * @param toAccount
+     * @param amount
+     * @return
+     * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
+     */
+    public String move(String fromAccount, String toAccount, BigDecimal amount) throws CryptoCurrencyRpcException {
+        JsonObject response = callAPIMethod(APICalls.MOVE, fromAccount, toAccount, amount);
+        cryptoCurrencyRpcExceptionHandler.checkException(response);
+        return response.get("result").getAsString();
+    }
+
+    /**
      * < amount > is a real and is rounded to the nearest 0.00000001
      *
      * @param toAddress
