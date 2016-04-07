@@ -329,10 +329,10 @@ public class CryptoCurrencyRPC {
      * @return
      * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
-    public String move(String fromAccount, String toAccount, BigDecimal amount) throws CryptoCurrencyRpcException {
-        JsonObject response = callAPIMethod(APICalls.MOVE, fromAccount, toAccount, amount);
+    public boolean move(String fromAccount, String toAccount, BigDecimal amount, String comment) throws CryptoCurrencyRpcException {
+        JsonObject response = callAPIMethod(APICalls.MOVE, fromAccount, toAccount, amount, 1, comment);
         cryptoCurrencyRpcExceptionHandler.checkException(response);
-        return response.get("result").getAsString();
+        return response.get("result").getAsBoolean();
     }
 
     /**
