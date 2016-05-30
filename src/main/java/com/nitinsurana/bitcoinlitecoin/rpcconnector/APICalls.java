@@ -39,7 +39,15 @@ public enum APICalls {
     CREATE_RAW_TRANSACTION("createrawtransaction"),
     SIGN_RAW_TRANSACTION("signrawtransaction"),
     VALIDATE_ADDRESS("validateaddress"),
-    ENCRYPT_WALLET("encryptwallet");
+    ENCRYPT_WALLET("encryptwallet"),
+
+    //OMNI
+    OMNI_SEND("omni_send"),
+    OMNI_GETINFO("omni_getinfo"),
+    OMNI_GETBALANCE("omni_getbalance"),
+    OMNI_GETALLBALANCESFORID("omni_getallbalancesforid"),
+    OMNI_GETTRANSACTION("omni_gettransaction"),
+    OMNI_LISTTRANSACTIONS("omni_listtransactions");
 
     private String value;
 
