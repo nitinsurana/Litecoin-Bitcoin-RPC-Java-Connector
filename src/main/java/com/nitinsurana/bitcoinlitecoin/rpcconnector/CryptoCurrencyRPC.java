@@ -35,9 +35,9 @@ public class CryptoCurrencyRPC {
 
     public static final Logger LOG = Logger.getLogger("rpcLogger");
 
-    private CryptoCurrencyRpcExceptionHandler cryptoCurrencyRpcExceptionHandler = new CryptoCurrencyRpcExceptionHandler();
-    private Gson gson = new Gson();
-    private JsonParser jsonParser = new JsonParser();
+    protected CryptoCurrencyRpcExceptionHandler cryptoCurrencyRpcExceptionHandler = new CryptoCurrencyRpcExceptionHandler();
+    protected Gson gson = new Gson();
+    protected JsonParser jsonParser = new JsonParser();
 
     private static final String CHARACTER_ENCODING = "UTF-8";
     private String uri;
@@ -384,7 +384,6 @@ public class CryptoCurrencyRPC {
     public List<Transaction> listTransactions(String account, int count, int from) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_TRANSACTIONS, account, count, from);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
-
         return Arrays.asList(gson.fromJson(jsonObj.get("result").getAsJsonArray(), Transaction[].class));
     }
 
@@ -504,7 +503,7 @@ public class CryptoCurrencyRPC {
 
 
     //Implementation from https://github.com/SulacoSoft/BitcoindConnector4J repository
-    private JsonObject callAPIMethod(APICalls callMethod, Object... params) throws CallApiCryptoCurrencyRpcException {
+    protected JsonObject callAPIMethod(APICalls callMethod, Object... params) throws CallApiCryptoCurrencyRpcException {
         try {
             String jsonRequest = String.format("{\"jsonrpc\": \"2.0\", \"method\": \"%s\", \"params\": [%s], \"id\": %s}",
                     callMethod.toString(), buildParamsString(params), id.getAndIncrement());
