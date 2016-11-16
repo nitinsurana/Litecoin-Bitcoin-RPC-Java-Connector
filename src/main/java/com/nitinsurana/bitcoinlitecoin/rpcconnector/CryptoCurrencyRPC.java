@@ -46,7 +46,11 @@ public class CryptoCurrencyRPC {
     private HttpClientContext context;
     private AtomicLong id = new AtomicLong(1L);
 
-    public CryptoCurrencyRPC(final String rpcUser, final String rpcPassword, String rpcHost, String rpcPort) {
+    private String passphrase;
+    private int timeToUnlockWalle;
+
+    public CryptoCurrencyRPC(final String rpcUser, final String rpcPassword, String rpcHost, String rpcPort,
+                             String passphrase, int timeToUnlockWalle) {
         this.uri = "/";
 
         httpClient = HttpClients.createDefault();
@@ -62,17 +66,22 @@ public class CryptoCurrencyRPC {
         context = HttpClientContext.create();
         context.setCredentialsProvider(credsProvider);
         context.setAuthCache(authCache);
-
+        this.passphrase = passphrase;
+        this.timeToUnlockWalle=timeToUnlockWalle;
     }
 
-    /**
-     * Safely copies wallet.dat to destination, which can be a directory or a
-     * path with filename.
-     *
-     * @param destination
-     * @return
-     * @throws Exception
-     */
+    public CryptoCurrencyRPC(final String rpcUser, final String rpcPassword, String rpcHost, String rpcPort) {
+        this(rpcUser, rpcPassword, rpcHost, rpcPort, null, 0);
+    }
+
+        /**
+         * Safely copies wallet.dat to destination, which can be a directory or a
+         * path with filename.
+         *
+         * @param destination
+         * @return
+         * @throws Exception
+         */
     public boolean backupWallet(String destination) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.BACKUP_WALLET, destination);
         if (jsonObj.get("error") == null) {
@@ -102,7 +111,14 @@ public class CryptoCurrencyRPC {
      * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
     public String dumpPrivateKey(String address) throws CryptoCurrencyRpcException {
+        unlockWallets();
         JsonObject jsonObj = callAPIMethod(APICalls.DUMP_PRIVATE_KEY, address);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
+        return jsonObj.get("result").getAsString();
+    }
+
+    public String encryptWallet(String passphrase) throws CryptoCurrencyRpcException {
+        JsonObject jsonObj = callAPIMethod(APICalls.ENCRYPT_WALLET, passphrase);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
     }
@@ -315,6 +331,7 @@ public class CryptoCurrencyRPC {
      * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
     public String sendFrom(String fromAccount, String toAddress, BigDecimal amount) throws CryptoCurrencyRpcException {
+        unlockWallets();
         JsonObject response = callAPIMethod(APICalls.SEND_FROM, fromAccount, toAddress, amount);
         cryptoCurrencyRpcExceptionHandler.checkException(response);
         return response.get("result").getAsString();
@@ -344,6 +361,7 @@ public class CryptoCurrencyRPC {
      * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
     public String sendToAddress(String toAddress, BigDecimal amount) throws CryptoCurrencyRpcException {
+        unlockWallets();
         JsonObject jsonObj = callAPIMethod(APICalls.SEND_TO_ADDRESS, toAddress, amount);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsString();
@@ -353,6 +371,23 @@ public class CryptoCurrencyRPC {
         JsonObject jsonObj = callAPIMethod(APICalls.VALIDATE_ADDRESS, address);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return jsonObj.get("result").getAsJsonObject().get("isvalid").getAsBoolean();
+    }
+
+    /**
+     * Unlock wallet
+     * @param passphrase
+     * @param timeout in seconds
+     * @return
+     * @throws CryptoCurrencyRpcException
+     */
+    public boolean wallePassphrase(String passphrase, int timeout) throws CryptoCurrencyRpcException {
+        try {
+            JsonObject jsonObj = callAPIMethod(APICalls.WALLET_PASSPHRASE, passphrase, timeout);
+            cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     /**
@@ -480,6 +515,7 @@ public class CryptoCurrencyRPC {
      * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
     public Transaction signRawTransaction(String hexString) throws CryptoCurrencyRpcException {
+        unlockWallets();
         JsonObject jsonObj = callAPIMethod(APICalls.SIGN_RAW_TRANSACTION,hexString);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
 
@@ -495,6 +531,7 @@ public class CryptoCurrencyRPC {
      * @throws com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException
      */
     public String sendRawTransaction(String hexString) throws CryptoCurrencyRpcException {
+        unlockWallets();
         JsonObject jsonObj = callAPIMethod(APICalls.SEND_RAW_TRANSACTION,hexString);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
 
@@ -525,6 +562,12 @@ public class CryptoCurrencyRPC {
             throw new CallApiCryptoCurrencyRpcException(e.getMessage());
         }
 
+    }
+
+    protected void unlockWallets() {
+        if (passphrase != null) {
+            wallePassphrase(passphrase, timeToUnlockWalle);
+        }
     }
 
     private String buildParamsString(Object[] args) {

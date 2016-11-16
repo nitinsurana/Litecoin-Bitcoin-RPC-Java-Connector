@@ -40,6 +40,7 @@ public enum APICalls {
     SIGN_RAW_TRANSACTION("signrawtransaction"),
     VALIDATE_ADDRESS("validateaddress"),
     ENCRYPT_WALLET("encryptwallet"),
+    WALLET_PASSPHRASE("walletpassphrase"),
 
     //OMNI
     OMNI_SEND("omni_send"),
