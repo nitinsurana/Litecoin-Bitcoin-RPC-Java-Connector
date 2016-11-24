@@ -373,6 +373,12 @@ public class CryptoCurrencyRPC {
         return jsonObj.get("result").getAsJsonObject().get("isvalid").getAsBoolean();
     }
 
+    public JsonObject checkAndValidateAddress(String address) throws CryptoCurrencyRpcException {
+        JsonObject jsonObj = callAPIMethod(APICalls.VALIDATE_ADDRESS, address);
+        cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
+        return jsonObj.get("result").getAsJsonObject();
+    }
+
     /**
      * Unlock wallet
      * @param passphrase
