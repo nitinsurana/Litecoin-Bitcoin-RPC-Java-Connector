@@ -3,7 +3,6 @@ package com.nitinsurana.bitcoinlitecoin.rpcconnector;
 import com.google.gson.JsonObject;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.OmniTransaction;
-import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -49,7 +48,7 @@ public class OmniCryptoCurrencyRPC extends CryptoCurrencyRPC {
     }
 
     @Override
-    public Transaction getTransaction(String txid) throws CryptoCurrencyRpcException {
+    public OmniTransaction getTransaction(String txid) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.OMNI_GETTRANSACTION, txid);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return gson.fromJson(jsonObj.get("result").getAsJsonObject(), OmniTransaction.class);
