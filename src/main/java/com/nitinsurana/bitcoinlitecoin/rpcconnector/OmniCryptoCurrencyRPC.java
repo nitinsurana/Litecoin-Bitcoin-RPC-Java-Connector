@@ -3,6 +3,7 @@ package com.nitinsurana.bitcoinlitecoin.rpcconnector;
 import com.google.gson.JsonObject;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcException;
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.OmniTransaction;
+import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -59,5 +60,20 @@ public class OmniCryptoCurrencyRPC extends CryptoCurrencyRPC {
         JsonObject jsonObj = callAPIMethod(APICalls.OMNI_LISTTRANSACTIONS, account, count, from);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
         return Arrays.asList(gson.fromJson(jsonObj.get("result").getAsJsonArray(), OmniTransaction[].class));
+    }
+
+    @Override
+    public String sendRawTransaction(String hexString) throws CryptoCurrencyRpcException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String sendToAddress(String toAddress, BigDecimal amount) throws CryptoCurrencyRpcException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Transaction signRawTransaction(String hexString) throws CryptoCurrencyRpcException {
+        throw new UnsupportedOperationException();
     }
 }
