@@ -45,7 +45,7 @@ public class OmniCryptoCurrencyRPC extends CryptoCurrencyRPC {
     public BigDecimal getBalance() throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.OMNI_GETALLBALANCESFORID, tokenId);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
-        return jsonObj.get("result").getAsBigDecimal();
+        return jsonObj.get("result").getAsJsonObject().get("balance").getAsBigDecimal();
     }
 
     @Override
