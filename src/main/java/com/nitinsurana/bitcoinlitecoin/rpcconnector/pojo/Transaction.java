@@ -64,8 +64,16 @@ public class Transaction {
     private String otheraccount;
     private String comment;
     private String to;
-    
-    
+	private boolean isMine;
+
+
+	public boolean isMine() {
+		return isMine;
+	}
+
+	public void setMine(boolean mine) {
+		isMine = mine;
+	}
 	public String getOtheraccount() {
 		return otheraccount;
 	}
