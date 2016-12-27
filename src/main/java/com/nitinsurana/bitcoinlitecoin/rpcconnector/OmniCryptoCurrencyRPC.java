@@ -22,7 +22,7 @@ public class OmniCryptoCurrencyRPC extends CryptoCurrencyRPC {
 
     @Override
     public String sendFrom(String fromAccount, String toAddress, BigDecimal amount) throws CryptoCurrencyRpcException {
-        JsonObject response = callAPIMethod(APICalls.OMNI_SEND, fromAccount, toAddress, tokenId, amount);
+        JsonObject response = callAPIMethod(APICalls.OMNI_SEND, fromAccount, toAddress, tokenId, amount.toPlainString());
         cryptoCurrencyRpcExceptionHandler.checkException(response);
         return response.get("result").getAsString();
     }
