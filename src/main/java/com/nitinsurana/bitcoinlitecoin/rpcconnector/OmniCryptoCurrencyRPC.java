@@ -8,6 +8,7 @@ import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by d.romantsov on 25.05.2016.
@@ -52,14 +53,16 @@ public class OmniCryptoCurrencyRPC extends CryptoCurrencyRPC {
     public OmniTransaction getTransaction(String txid) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.OMNI_GETTRANSACTION, txid);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
-        return gson.fromJson(jsonObj.get("result").getAsJsonObject(), OmniTransaction.class);
+        OmniTransaction tx = gson.fromJson(jsonObj.get("result").getAsJsonObject(), OmniTransaction.class);
+        tx.setCryptoCurrency(cryptoCurrency);
+        return tx;
     }
 
     @Override
     public List listTransactions(String account, int count, int from) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.OMNI_LISTTRANSACTIONS, account, count, from);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
-        return Arrays.asList(gson.fromJson(jsonObj.get("result").getAsJsonArray(), OmniTransaction[].class));
+        return Arrays.stream(gson.fromJson(jsonObj.get("result").getAsJsonArray(), OmniTransaction[].class)).map(tx -> tx.andSetCryptoCurrency(cryptoCurrency)).collect(Collectors.toList());
     }
 
     @Override

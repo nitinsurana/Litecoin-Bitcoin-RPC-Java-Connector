@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public class CryptoCurrencyRPC {
 
@@ -45,12 +46,13 @@ public class CryptoCurrencyRPC {
     private HttpHost targetHost;
     private HttpClientContext context;
     private AtomicLong id = new AtomicLong(1L);
+    protected String cryptoCurrency;
 
     private String passphrase;
     private int timeToUnlockWalle;
 
     public CryptoCurrencyRPC(final String rpcUser, final String rpcPassword, String rpcHost, String rpcPort,
-                             String passphrase, int timeToUnlockWalle) {
+                             String passphrase, int timeToUnlockWalle, String cryptoCurrency) {
         this.uri = "/";
 
         httpClient = HttpClients.createDefault();
@@ -68,10 +70,15 @@ public class CryptoCurrencyRPC {
         context.setAuthCache(authCache);
         this.passphrase = passphrase;
         this.timeToUnlockWalle=timeToUnlockWalle;
+        this.cryptoCurrency = cryptoCurrency;
     }
 
     public CryptoCurrencyRPC(final String rpcUser, final String rpcPassword, String rpcHost, String rpcPort) {
-        this(rpcUser, rpcPassword, rpcHost, rpcPort, null, 0);
+        this(rpcUser, rpcPassword, rpcHost, rpcPort, null, 0, "BTC");
+    }
+
+    public CryptoCurrencyRPC(final String rpcUser, final String rpcPassword, String rpcHost, String rpcPort, String cryptoCurrency) {
+        this(rpcUser, rpcPassword, rpcHost, rpcPort, null, 0, cryptoCurrency);
     }
 
         /**
@@ -278,8 +285,10 @@ public class CryptoCurrencyRPC {
     public Transaction getTransaction(String txid) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.GET_TRANSACTION, txid);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
-        return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
+        return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class)
+                .andSetCryptoCurrency(cryptoCurrency);
     }
+
 
     /**
      * Returns Object that has account names as keys, account balances as
@@ -425,7 +434,8 @@ public class CryptoCurrencyRPC {
     public List<Transaction> listTransactions(String account, int count, int from) throws CryptoCurrencyRpcException {
         JsonObject jsonObj = callAPIMethod(APICalls.LIST_TRANSACTIONS, account, count, from);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
-        return Arrays.asList(gson.fromJson(jsonObj.get("result").getAsJsonArray(), Transaction[].class));
+        return Arrays.stream(gson.fromJson(jsonObj.get("result").getAsJsonArray(), Transaction[].class))
+                .map(tx -> tx.andSetCryptoCurrency(cryptoCurrency)).collect(Collectors.toList());
     }
 
     /**
@@ -509,7 +519,8 @@ public class CryptoCurrencyRPC {
         JsonObject jsonObj = callAPIMethod(APICalls.CREATE_RAW_TRANSACTION, prevOut, out);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
 
-        return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
+        return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class)
+                .andSetCryptoCurrency(cryptoCurrency);
     }
 
     /**
@@ -525,7 +536,8 @@ public class CryptoCurrencyRPC {
         JsonObject jsonObj = callAPIMethod(APICalls.SIGN_RAW_TRANSACTION,hexString);
         cryptoCurrencyRpcExceptionHandler.checkException(jsonObj);
 
-        return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class);
+        return gson.fromJson(jsonObj.get("result").getAsJsonObject(), Transaction.class)
+                .andSetCryptoCurrency(cryptoCurrency);
     }
 
     /**

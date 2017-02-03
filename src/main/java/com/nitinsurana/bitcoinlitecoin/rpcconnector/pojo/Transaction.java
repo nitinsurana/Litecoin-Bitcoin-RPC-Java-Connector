@@ -65,7 +65,7 @@ public class Transaction {
     private String comment;
     private String to;
 	private boolean isMine;
-
+	private String cryptoCurrency;
 
 	public boolean isMine() {
 		return isMine;
@@ -151,7 +151,20 @@ public class Transaction {
 		this.block = block;
 		return this;
 	}
-	
+
+	public String getCryptoCurrency() {
+		return cryptoCurrency;
+	}
+
+	public Transaction andSetCryptoCurrency(String cryptoCurrency) {
+		this.cryptoCurrency = cryptoCurrency;
+		return this;
+	}
+
+	public void setCryptoCurrency(String cryptoCurrency) {
+		this.cryptoCurrency = cryptoCurrency;
+	}
+
 	public String getHex() {
 		return hex;
 	}
