@@ -57,17 +57,19 @@ public class CryptoCurrencyRPC {
 
         httpClient = HttpClients.createDefault();
         targetHost = new HttpHost(rpcHost, Integer.parseInt(rpcPort), "http");
-        CredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider.setCredentials(new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-                new UsernamePasswordCredentials(rpcUser, rpcPassword));
-
-        AuthCache authCache = new BasicAuthCache();
-        BasicScheme basicAuth = new BasicScheme();
-        authCache.put(targetHost, basicAuth);
-
         context = HttpClientContext.create();
-        context.setCredentialsProvider(credsProvider);
-        context.setAuthCache(authCache);
+        if (rpcUser != null && rpcPassword != null) {
+            CredentialsProvider credsProvider = new BasicCredentialsProvider();
+            credsProvider.setCredentials(new AuthScope(targetHost.getHostName(), targetHost.getPort()),
+                    new UsernamePasswordCredentials(rpcUser, rpcPassword));
+
+            AuthCache authCache = new BasicAuthCache();
+            BasicScheme basicAuth = new BasicScheme();
+            authCache.put(targetHost, basicAuth);
+            context.setCredentialsProvider(credsProvider);
+            context.setAuthCache(authCache);
+        }
+
         this.passphrase = passphrase;
         this.timeToUnlockWalle=timeToUnlockWalle;
         this.cryptoCurrency = cryptoCurrency;
