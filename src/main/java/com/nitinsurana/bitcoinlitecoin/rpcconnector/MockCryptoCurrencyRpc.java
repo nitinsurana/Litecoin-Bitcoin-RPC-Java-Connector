@@ -5,13 +5,37 @@ import com.nitinsurana.bitcoinlitecoin.rpcconnector.exception.CryptoCurrencyRpcE
 import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by d.romantsov on 20.03.2017.
  */
 public class MockCryptoCurrencyRpc extends CryptoCurrencyRPC {
     public MockCryptoCurrencyRpc() {
-        super(null, null, null, null, null, 0, "MOCK");
+        super(null, null, "localhost", "1245", null, 0, "MOCK");
+    }
+
+    private Transaction getMockTransaction() {
+        Transaction tx = new Transaction();
+        tx.setAccount("mockAccount");
+        tx.setAddress("n1v1XpeNaC124r9DXcBAka2XgJpcMpUBMB");
+        tx.setCategory(Transaction.Category.RECEIVE);
+        tx.setAmount(BigDecimal.ONE);
+        tx.setFee(new BigDecimal("0.002"));
+        return tx;
+    }
+
+    @Override
+    public List<Transaction> listTransactions(String account, int count, int from) throws CryptoCurrencyRpcException {
+        ArrayList<Transaction> txs= new ArrayList<Transaction>();
+        txs.add(getMockTransaction());
+        txs.add(getMockTransaction());
+        txs.add(getMockTransaction());
+        txs.add(getMockTransaction());
+        txs.add(getMockTransaction());
+        txs.add(getMockTransaction());
+        return txs;
     }
 
     @Override
@@ -81,7 +105,7 @@ public class MockCryptoCurrencyRpc extends CryptoCurrencyRPC {
 
     @Override
     public Transaction getTransaction(String txid) throws CryptoCurrencyRpcException {
-        return new Transaction();
+        return getMockTransaction();
     }
 
     @Override
