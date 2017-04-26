@@ -1,5 +1,6 @@
 package com.nitinsurana.bitcoinlitecoin.rpcconnector;
 
+import java.net.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -52,11 +53,19 @@ public class CryptoCurrencyRPC {
     private int timeToUnlockWalle;
 
     public CryptoCurrencyRPC(final String rpcUser, final String rpcPassword, String rpcHost, String rpcPort,
-                             String passphrase, int timeToUnlockWalle, String cryptoCurrency) {
-        this.uri = "/";
+                             String passphrase, int timeToUnlockWalle, String cryptoCurrency)  {
+        String host;
+        try {
+            URL url = new URL(rpcHost);
+            this.uri = url.getPath();
+            host=url.getHost();
+        } catch (MalformedURLException ex) {
+            this.uri = "/";
+            host=rpcHost;
+        }
 
         httpClient = HttpClients.createDefault();
-        targetHost = new HttpHost(rpcHost, Integer.parseInt(rpcPort), "http");
+        targetHost = new HttpHost(host, Integer.parseInt(rpcPort), "http");
         context = HttpClientContext.create();
         if (rpcUser != null && rpcPassword != null) {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
