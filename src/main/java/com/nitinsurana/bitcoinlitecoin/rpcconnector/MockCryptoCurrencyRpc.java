@@ -6,12 +6,16 @@ import com.nitinsurana.bitcoinlitecoin.rpcconnector.pojo.Transaction;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by d.romantsov on 20.03.2017.
  */
 public class MockCryptoCurrencyRpc extends CryptoCurrencyRPC {
+    private Random random = new Random();
+
     public MockCryptoCurrencyRpc() {
         super(null, null, "localhost", "1245", null, 0, "MOCK");
     }
@@ -20,9 +24,10 @@ public class MockCryptoCurrencyRpc extends CryptoCurrencyRPC {
         Transaction tx = new Transaction();
         tx.setAccount("mockAccount");
         tx.setAddress("n1v1XpeNaC124r9DXcBAka2XgJpcMpUBMB");
-        tx.setCategory(Transaction.Category.RECEIVE);
-        tx.setAmount(BigDecimal.ONE);
-        tx.setFee(new BigDecimal("0.002"));
+        tx.setCategory(random.nextBoolean() ? Transaction.Category.RECEIVE: Transaction.Category.SEND);
+        tx.setAmount(new BigDecimal(random.nextDouble()));
+        tx.setFee(new BigDecimal(random.nextDouble()/10));
+        tx.setTimereceived(new Date().getTime() - random.nextInt(10000));
         return tx;
     }
 
